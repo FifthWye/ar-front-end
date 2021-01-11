@@ -19,7 +19,7 @@ const theme = {
 const opts = {
   theme,
   icons: {
-    iconfont: 'mdi',
+    iconfont: 'mdiSvg',
   },
 };
 

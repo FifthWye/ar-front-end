@@ -1,14 +1,19 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link> |
-      <router-link to="/login">Login</router-link> |
-      <router-link to="/panel">Panel</router-link>
-    </div>
+    <Drawer/>
     <router-view/>
   </div>
 </template>
+
+<script>
+import Drawer from "./components/Drawer.vue";
+
+export default {
+  components: {
+    Drawer,
+  },
+};
+</script>
 
 <style lang="scss">
 #app {
