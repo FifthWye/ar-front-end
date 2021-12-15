@@ -46,7 +46,8 @@ export default {
     menuItems: [
       { route: "/", icon: "mdi-home", text: "Home" },
       { route: "/panel", icon: "mdi-dns", text: "Panel" },
-      { route: "/login", icon: "mdi-face", text: "Log in" },
+      { route: "/login", icon: "mdi-login", text: "Log in" },
+      { route: "/automated-responses", icon: "mdi-forum", text: "Automated responses" },
     ],
   }),
   methods: {
