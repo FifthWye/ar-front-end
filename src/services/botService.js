@@ -5,13 +5,14 @@ const apiEndpoint = apiUrl + '/bot';
 
 async function getBots() {
   const response = await http.get(apiEndpoint + '/', {});
+
   return response;
 }
 
-async function createBot(instagramUrl) {
-  instagramUrl = 'link';
-  const response = await http.post(apiEndpoint + '/', { instagramUrl });
-  return JSON.stringify(response.data.bot);
+async function createBot(credentials) {
+  const response = await http.post(apiEndpoint + '/', credentials);
+
+  return response;
 }
 
 async function deleteBot(botId) {
@@ -25,39 +26,51 @@ async function deleteBot(botId) {
 }
 
 async function setActiveValue(botId, isActive) {
-  console.log(botId, isActive);
   const response = await http.patch(apiEndpoint + '/isActive', {
     botId,
     isActive,
   });
-  console.log(response);
-  return JSON.stringify(response.data.bot);
+
+  return response;
+}
+
+async function editCredentials(botId, username, password) {
+  const response = await http.patch(apiEndpoint + '/credentials', {
+    botId,
+    username,
+    password,
+  });
+
+  return response;
+}
+
+async function editDefaultReply(botId, defaultReply) {
+  const response = await http.patch(apiEndpoint + '/default-reply', {
+    botId,
+    defaultReply,
+  });
+
+  return response;
 }
 
 //=========================Replies=========================//
 
 async function getReplies(botId, pageNum, pageSize) {
-  //   botId = "61a2916743f8014cb8b42828";
-  //   pageNum = "1";
-  //   pageSize = "10";
-  const response = await http.get(apiEndpoint + '/reply', {
-    botId,
-    pageNum,
-    pageSize,
-  });
-  return JSON.stringify(response.data.bot);
+  const params = pageNum && pageSize ? { botId, pageNum, pageSize } : { botId };
+  const response = await http.get(apiEndpoint + '/reply', { params });
+
+  return response;
 }
 
-async function addReply(botId, keywords, reply) {
-  //   botId = "61a2916743f8014cb8b42828";
-  //   keywords = ["Hello", "Hola"];
-  //   reply = "Baka";
+async function addReply(botId, keywords, answer) {
+  console.log(botId, keywords, answer)
   const response = await http.post(apiEndpoint + '/reply', {
     botId,
     keywords,
-    reply,
+    answer,
   });
-  return JSON.stringify(response.data.reply);
+
+  return response;
 }
 
 async function editReply(botId, replyId, keywords, reply) {
@@ -77,6 +90,7 @@ async function editReply(botId, replyId, keywords, reply) {
 async function deleteReply(botId, replyId) {
   //   botId = "61a2916743f8014cb8b42828";
   //   replyId = "61a292a3a168db4a24186028";
+  console.log(botId, replyId)
   const response = await http.delete(apiEndpoint + '/reply', {
     data: {
       botId,
@@ -119,4 +133,6 @@ export const botService = {
   inviteModerator,
   removeModerator,
   setActiveValue,
+  editCredentials,
+  editDefaultReply,
 };

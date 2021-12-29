@@ -62,7 +62,30 @@
               </v-tooltip>
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
+                  <router-link
+                    style="text-decoration: none; color: inherit"
+                    :to="{ name: 'Replies', params: { botId: item.id } }"
+                  >
+                    <v-btn
+                      small
+                      elevation="0"
+                      class="action"
+                      fab
+                      dark
+                      color="orange"
+                    >
+                      <v-icon :alt="item.id" v-on="on" v-bind="attrs" dark>
+                        mdi-forum
+                      </v-icon>
+                    </v-btn>
+                  </router-link>
+                </template>
+                <span>Edit replies</span>
+              </v-tooltip>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
                   <v-btn
+                    @click="handleEdit(item.id)"
                     small
                     elevation="0"
                     class="action"
@@ -98,12 +121,35 @@
             </template>
           </v-data-table>
         </v-row>
+        <v-btn
+          @click="handleAdd"
+          class="add-bot"
+          color="green"
+          dark
+          absolute
+          bottom
+          right
+          fab
+        >
+          <v-icon>mdi-plus</v-icon>
+        </v-btn>
         <WarringAlert
           :show="this.alertValues.show"
           :text="this.alertValues.text"
           :callback="this.alertValues.callback"
         />
-        <DialogForm :show="this.dialogForm.show" />
+        <DialogForm
+          :show="this.editBotDialogForm.show"
+          :callback="this.editBotDialogForm.callback"
+          :hide="this.hideEditDialogForm"
+        />
+        <DialogForm
+          :onlyCredentials="true"
+          :requireFields="true"
+          :show="this.addBotDialogForm.show"
+          :callback="this.addBotDialogForm.callback"
+          :hide="this.hideAddDialogForm"
+        />
       </v-container>
     </v-main>
   </v-app>
@@ -142,7 +188,11 @@ export default {
       text: "Are you sure you want to delete bot? You won't be able to restore it after this action.",
       show: false,
     },
-    dialogForm: {
+    editBotDialogForm: {
+      callback: () => null,
+      show: false,
+    },
+    addBotDialogForm: {
       callback: () => null,
       show: false,
     },
@@ -177,15 +227,41 @@ export default {
       this.alertValues.show = true;
     },
     handleTurnOnTurnOff: async function (id, currentState) {
-      console.log(id, currentState);
       await botService.setActiveValue(id, !currentState);
       this.bots = [];
       this.setUpPage();
     },
-    handleEdit: async function (id, currentState) {
-      await botService.setActiveValue(id, !currentState);
-      this.bots = [];
-      this.setUpPage();
+    handleEdit: async function (id) {
+      const callback = async (username, password, defaultReply) => {
+        if (username && password)
+          await botService.editCredentials(id, username, password);
+        if (defaultReply) await botService.editDefaultReply(id, defaultReply);
+        this.hideEditDialogForm();
+        this.bots = [];
+        this.setUpPage();
+      };
+
+      this.editBotDialogForm.callback = callback;
+      this.editBotDialogForm.show = true;
+    },
+    handleAdd: async function () {
+      const callback = async (username, password) => {
+        if (username && password)
+          await botService.createBot({ username, password });
+
+        this.hideAddDialogForm();
+        this.bots = [];
+        this.setUpPage();
+      };
+
+      this.addBotDialogForm.callback = callback;
+      this.addBotDialogForm.show = true;
+    },
+    hideEditDialogForm: function () {
+      this.editBotDialogForm.show = false;
+    },
+    hideAddDialogForm: function () {
+      this.addBotDialogForm.show = false;
     },
     setUpPage: async function () {
       const response = await botService.getBots();
@@ -244,11 +320,17 @@ export default {
 .on-hover {
   background-color: red !important;
 }
+
 .action {
   margin: 0 10px;
 }
 
-.actions-header > span {
-  margin: 0 20px;
+.actions-header {
+  padding-right: 20px !important;
+}
+
+.add-bot {
+  bottom: 30px !important;
+  right: 30px !important;
 }
 </style>

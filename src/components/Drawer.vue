@@ -49,12 +49,6 @@ export default {
       { route: "/", icon: "mdi-home", text: "Home", showUnauth: null },
       { route: "/panel", icon: "mdi-dns", text: "Panel", showUnauth: false },
       { route: "/login", icon: "mdi-login", text: "Log in", showUnauth: true },
-      {
-        route: "/responses",
-        icon: "mdi-forum",
-        text: "Responses",
-        showUnauth: false,
-      },
     ],
   }),
   methods: {

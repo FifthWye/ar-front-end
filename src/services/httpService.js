@@ -9,7 +9,7 @@ axios.interceptors.response.use(null, (error) => {
     console.error("An unexpected error occured.");
   }
   //change to error no message
-  return Promise.reject(error.response.data.message);
+  return Promise.reject(error.response);
 });
 
 function setJwtHeader(jwt) {

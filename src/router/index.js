@@ -4,6 +4,8 @@ import Home from '../views/Home.vue';
 import Login from '../views/Login/index.vue';
 import SignUp from '../views/SignUp/index.vue';
 import Panel from '../views/Panel/index.vue';
+import Replies from '../views/Replies/index.vue';
+
 
 Vue.use(VueRouter);
 
@@ -55,6 +57,12 @@ const routes = [
     component: Panel,
     beforeEnter: forUnAuthUsers
   },
+  {
+    path: '/replies/:botId', 
+    name: 'Replies', 
+    component: Replies,
+    beforeEnter: forUnAuthUsers
+ }
 ];
 
 const router = new VueRouter({
