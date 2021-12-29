@@ -7,14 +7,14 @@
       <input
         type="text"
         name="email"
-        v-model="input.email"
+        v-model="email"
         placeholder="Username"
       />
       <input
         @keyup.enter="handleLogin()"
         type="text"
         name="password"
-        v-model="input.password"
+        v-model="password"
         placeholder="Password"
       />
 
@@ -32,15 +32,13 @@ export default {
     return {
       isClosed: false,
       error: "",
-      input: {
-        username: "",
-        password: "",
-      },
+      email: "",
+      password: "",
     };
   },
   methods: {
     async handleLogin() {
-      const res = await authService.login();
+      const res = await authService.login(this.email, this.password);
       console.log("LOGIN " + res);
     },
     async handleTest() {

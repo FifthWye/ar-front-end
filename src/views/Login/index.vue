@@ -16,22 +16,41 @@
                     name="login"
                     prepend-icon="mdi-account"
                     type="text"
+                    v-model="email"
                   ></v-text-field>
                   <v-text-field
                     label="Password"
                     name="password"
                     prepend-icon="mdi-lock"
                     type="password"
+                    v-model="password"
                   ></v-text-field>
                 </v-form>
               </v-card-text>
               <v-card-actions>
-                <v-btn color="primary" @click="login" block>Login</v-btn>
+                <v-btn color="primary" @click="handleLogin" block>Login</v-btn>
               </v-card-actions>
               <v-card-text>
-                Don't have an account? <router-link to="/sign-up">Sign up</router-link>
+                Don't have an account?
+                <router-link to="/sign-up">Sign up</router-link>
               </v-card-text>
             </v-card>
+            <v-alert
+              :value="alertError"
+              class="alert"
+              transition="scale-transition"
+              type="error"
+            >
+              {{ alertText }}
+            </v-alert>
+            <v-alert
+              :value="alertSuccess"
+              class="alert"
+              transition="scale-transition"
+              type="success"
+            >
+              {{ alertText }}
+            </v-alert>
           </v-col>
         </v-row>
       </v-container>
@@ -40,20 +59,44 @@
 </template>
 
 <script>
+import { authService } from "../../services/authService";
 export default {
   name: "Login",
+  data: function () {
+    return {
+      email: "",
+      password: "",
+      alertText: "",
+      alertError: false,
+      alertSuccess: false,
+    };
+  },
   methods: {
-    login: () => {
-      alert("Login");
+    async handleLogin() {
+      const res = await authService.login(this.email, this.password);
+
+      for (const [key, value] of Object.entries(res)) {
+        this.alertText = value;
+        key === 'error' ? this.alertError = true : this.alertSuccess = true;
+        setTimeout(() => {
+          this.alertError = false;
+          this.alertSuccess = false;
+        }, 5000);
+      }
     },
   },
 };
 </script>
 
 <style scoped>
-
 .background {
   background-color: transparent;
 }
 
+.alert {
+  position: absolute;
+  text-align: left;
+  left: 50%;
+  transform: translateX(-50%);
+}
 </style>
