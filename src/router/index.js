@@ -6,7 +6,6 @@ import SignUp from '../views/SignUp/index.vue';
 import Panel from '../views/Panel/index.vue';
 import Replies from '../views/Replies/index.vue';
 
-
 Vue.use(VueRouter);
 
 const forUnAuthUsers = (to, from, next) => {
@@ -37,7 +36,8 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue'),
+    component: () =>
+      import(/* webpackChunkName: "about" */ '../views/About.vue'),
   },
   {
     path: '/login',
@@ -55,14 +55,15 @@ const routes = [
     path: '/panel',
     name: 'Panel',
     component: Panel,
-    beforeEnter: forUnAuthUsers
+    beforeEnter: forUnAuthUsers,
   },
+
   {
-    path: '/replies/:botId', 
-    name: 'Replies', 
+    path: '/replies/:botId',
+    name: 'Replies',
     component: Replies,
-    beforeEnter: forUnAuthUsers
- }
+    beforeEnter: forUnAuthUsers,
+  },
 ];
 
 const router = new VueRouter({

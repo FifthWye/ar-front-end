@@ -16,18 +16,13 @@ async function createBot(credentials) {
 }
 
 async function deleteBot(botId) {
-  const response = await http.delete(apiEndpoint + '/', {
-    data: {
-      botId,
-    },
-  });
+  const response = await http.delete(apiEndpoint + '/' + botId);
 
   return response;
 }
 
 async function setActiveValue(botId, isActive) {
-  const response = await http.patch(apiEndpoint + '/isActive', {
-    botId,
+  const response = await http.patch(apiEndpoint + '/' + botId + '/isActive', {
     isActive,
   });
 
@@ -35,20 +30,24 @@ async function setActiveValue(botId, isActive) {
 }
 
 async function editCredentials(botId, username, password) {
-  const response = await http.patch(apiEndpoint + '/credentials', {
-    botId,
-    username,
-    password,
-  });
+  const response = await http.patch(
+    apiEndpoint + '/' + botId + '/credentials',
+    {
+      username,
+      password,
+    }
+  );
 
   return response;
 }
 
 async function editDefaultReply(botId, defaultReply) {
-  const response = await http.patch(apiEndpoint + '/default-reply', {
-    botId,
-    defaultReply,
-  });
+  const response = await http.patch(
+    apiEndpoint + '/' + botId + '/default-reply',
+    {
+      defaultReply,
+    }
+  );
 
   return response;
 }
@@ -56,16 +55,14 @@ async function editDefaultReply(botId, defaultReply) {
 //=========================Replies=========================//
 
 async function getReplies(botId, pageNum, pageSize) {
-  const params = pageNum && pageSize ? { botId, pageNum, pageSize } : { botId };
-  const response = await http.get(apiEndpoint + '/reply', { params });
-
+  const response = await http.get(apiEndpoint + '/' + botId + '/reply', {
+    params: { pageNum: pageNum || 1, pageSize: pageSize || 10 },
+  });
   return response;
 }
 
 async function addReply(botId, keywords, answer) {
-  console.log(botId, keywords, answer)
-  const response = await http.post(apiEndpoint + '/reply', {
-    botId,
+  const response = await http.post(apiEndpoint + '/' + botId + '/reply', {
     keywords,
     answer,
   });
@@ -73,53 +70,44 @@ async function addReply(botId, keywords, answer) {
   return response;
 }
 
-async function editReply(botId, replyId, keywords, reply) {
-  //   botId = "61a2916743f8014cb8b42828";
-  //   replyId = "61a29232a168db4a24186025";
-  //   keywords = ["Darov", "Privet", "Hola"];
-  //   reply = "Zdarova zaebal";
-  const response = await http.patch(apiEndpoint + '/reply', {
-    botId,
-    replyId,
-    keywords,
-    reply,
-  });
-  return JSON.stringify(response.data.reply);
+async function editReply(botId, replyId, keywords, answer) {
+  const response = await http.patch(
+    apiEndpoint + '/' + botId + '/reply/' + replyId,
+    {
+      keywords,
+      answer,
+    }
+  );
+  return response;
 }
 
 async function deleteReply(botId, replyId) {
-  //   botId = "61a2916743f8014cb8b42828";
-  //   replyId = "61a292a3a168db4a24186028";
-  console.log(botId, replyId)
-  const response = await http.delete(apiEndpoint + '/reply', {
-    data: {
-      botId,
-      replyId,
-    },
-  });
-  return JSON.stringify(response.data.reply);
+  const response = await http.delete(
+    apiEndpoint + '/' + botId + '/reply/' + replyId
+  );
+  return response;
 }
 
 //=========================Moderators=========================//
 
 async function inviteModerator(userToInviteId, botId) {
-  //   userToInviteId = "61a2947d4c8a5447bc7339fb";
-  //   botId = "61a2916743f8014cb8b42828";
-  const response = await http.patch(apiEndpoint + '/invite-moderator', {
-    userToInviteId,
-    botId,
-  });
-  return JSON.stringify(response.data.bot);
+  const response = await http.patch(
+    apiEndpoint + '/' + botId + '/invite-moderator',
+    {
+      userToInviteId,
+    }
+  );
+  return response;
 }
 
 async function removeModerator(userToRemoveId, botId) {
-  //   userToRemoveId = "61a2947d4c8a5447bc7339fb";
-  //   botId = "61a2916743f8014cb8b42828";
-  const response = await http.patch(apiEndpoint + '/remove-moderator', {
-    userToRemoveId,
-    botId,
-  });
-  return JSON.stringify(response.data.bot);
+  const response = await http.patch(
+    apiEndpoint + '/' + botId + '/remove-moderator',
+    {
+      userToRemoveId,
+    }
+  );
+  return response;
 }
 
 export const botService = {
