@@ -16,7 +16,7 @@
 
       <br />
       <router-link v-for="item in menuItems" :key="item.text" :to="item.route">
-        <v-list-item>
+        <v-list-item v-if="isShown({ ...item, isAuthorized })">
           <v-list-item-action>
             <v-btn icon>
               <v-icon>{{ item.icon }}</v-icon>
@@ -28,7 +28,7 @@
     </v-list>
 
     <template v-slot:append>
-      <div>
+      <div v-if="isAuthorized" @click="handleLogout" class="logout-wrapper">
         <v-icon v-if="mini">mdi-logout</v-icon>
         <v-btn v-if="!mini" class="logout" light>Logout</v-btn>
       </div>
@@ -37,6 +37,8 @@
 </template>
 
 <script>
+import { authService } from "../../src/services/authService";
+
 export default {
   name: "Drawer",
   data: () => ({
@@ -44,15 +46,28 @@ export default {
     drawer: true,
     expandIcon: "mdi-chevron-right",
     menuItems: [
-      { route: "/", icon: "mdi-home", text: "Home" },
-      { route: "/panel", icon: "mdi-dns", text: "Panel" },
-      { route: "/login", icon: "mdi-face", text: "Log in" },
+      { route: "/panel", icon: "mdi-dns", text: "Panel", showUnauth: false },
+      { route: "/login", icon: "mdi-login", text: "Log in", showUnauth: true },
     ],
   }),
   methods: {
     expandDrawer: function () {
       this.mini = !this.mini;
       this.expandIcon = this.mini ? "mdi-chevron-right" : "mdi-chevron-left";
+    },
+    handleLogout: function () {
+      authService.logout();
+    },
+    isShown: ({ showUnauth, isAuthorized }) => {
+      if (showUnauth === null) return true;
+      return isAuthorized
+        ? !showUnauth && isAuthorized
+        : showUnauth && !isAuthorized;
+    },
+  },
+  computed: {
+    isAuthorized: function () {
+      return Boolean(localStorage.getItem("token"));
     },
   },
 };
@@ -69,5 +84,9 @@ a {
 .logout {
   left: initial;
   width: 90%;
+}
+
+.logout-wrapper {
+  margin-bottom: 10px;
 }
 </style>
