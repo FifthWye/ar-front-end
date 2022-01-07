@@ -30,24 +30,18 @@ async function setActiveValue(botId, isActive) {
 }
 
 async function editCredentials(botId, username, password) {
-  const response = await http.patch(
-    apiEndpoint + '/' + botId + '/credentials',
-    {
-      username,
-      password,
-    }
-  );
+  const response = await http.patch(apiEndpoint + '/' + botId + '/credentials', {
+    username,
+    password,
+  });
 
   return response;
 }
 
 async function editDefaultReply(botId, defaultReply) {
-  const response = await http.patch(
-    apiEndpoint + '/' + botId + '/default-reply',
-    {
-      defaultReply,
-    }
-  );
+  const response = await http.patch(apiEndpoint + '/' + botId + '/default-reply', {
+    defaultReply,
+  });
 
   return response;
 }
@@ -71,42 +65,37 @@ async function addReply(botId, keywords, answer) {
 }
 
 async function editReply(botId, replyId, keywords, answer) {
-  const response = await http.patch(
-    apiEndpoint + '/' + botId + '/reply/' + replyId,
-    {
-      keywords,
-      answer,
-    }
-  );
+  const response = await http.patch(apiEndpoint + '/' + botId + '/reply/' + replyId, {
+    keywords,
+    answer,
+  });
   return response;
 }
 
 async function deleteReply(botId, replyId) {
-  const response = await http.delete(
-    apiEndpoint + '/' + botId + '/reply/' + replyId
-  );
+  const response = await http.delete(apiEndpoint + '/' + botId + '/reply/' + replyId);
   return response;
 }
 
+async function setReplyActiveValue(botId, replyId, isActive) {
+  const response = await http.patch(apiEndpoint + '/' + botId + '/reply/' + replyId+ '/isActive', {
+    isActive,
+  });
+  return response;
+}
 //=========================Moderators=========================//
 
 async function inviteModerator(userToInviteId, botId) {
-  const response = await http.patch(
-    apiEndpoint + '/' + botId + '/invite-moderator',
-    {
-      userToInviteId,
-    }
-  );
+  const response = await http.patch(apiEndpoint + '/' + botId + '/invite-moderator', {
+    userToInviteId,
+  });
   return response;
 }
 
 async function removeModerator(userToRemoveId, botId) {
-  const response = await http.patch(
-    apiEndpoint + '/' + botId + '/remove-moderator',
-    {
-      userToRemoveId,
-    }
-  );
+  const response = await http.patch(apiEndpoint + '/' + botId + '/remove-moderator', {
+    userToRemoveId,
+  });
   return response;
 }
 
@@ -118,6 +107,7 @@ export const botService = {
   addReply,
   deleteReply,
   editReply,
+  setReplyActiveValue,
   inviteModerator,
   removeModerator,
   setActiveValue,

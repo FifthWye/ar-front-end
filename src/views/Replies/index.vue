@@ -16,7 +16,7 @@
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
-                    v-if="!item.isActive"
+                    v-if="item.isActive"
                     @click="handleTurnOnTurnOff(item.id, item.isActive)"
                     small
                     elevation="0"
@@ -35,7 +35,7 @@
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
-                    v-if="item.isActive"
+                    v-if="!item.isActive"
                     @click="handleTurnOnTurnOff(item.id, item.isActive)"
                     small
                     elevation="0"
@@ -196,8 +196,8 @@ export default {
           await botService.addReply(botId, keywords, reply);
 
         this.hideAddDialogForm();
-        this.bots = [];
-        this.setUpPage();
+        this.replies = [];
+        this.setUpPage(botId);
       };
 
       this.addReplyDialogForm.callback = callback;
@@ -205,11 +205,11 @@ export default {
     },
     handleDelete: function (id) {
       const callback = async (withRequest) => {
-          const botId = this.$route.params.botId;
+        const botId = this.$route.params.botId;
         if (withRequest) {
           await botService.deleteReply(botId, id);
-          this.bots = [];
-          this.setUpPage();
+          this.replies = [];
+          this.setUpPage(botId);
         }
         this.alertValues.show = false;
       };
@@ -217,9 +217,16 @@ export default {
       this.alertValues.callback = callback;
       this.alertValues.show = true;
     },
+    handleTurnOnTurnOff: async function (replyId, currentState) {
+      const botId = this.$route.params.botId;
+      await botService.setReplyActiveValue(botId, replyId, !currentState);
+      this.replies = [];
+      this.setUpPage(botId);
+    },
   },
   async mounted() {
     const botId = this.$route.params.botId;
+    this.replies = [];
     await this.setUpPage(botId);
   },
 };

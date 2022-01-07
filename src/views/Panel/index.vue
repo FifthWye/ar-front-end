@@ -12,6 +12,24 @@
             <template v-slot:[`item.username`]="{ item }">
               <a :href="item.url" target="_blank">{{ item.username }}</a>
             </template>
+            <template v-slot:[`item.isValid`]="{ item }">
+              <v-tooltip v-if="item.isValid" bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-icon v-on="on" v-bind="attrs" color="green" :alt="item.id" dark>
+                    mdi-check-bold
+                  </v-icon>
+                </template>
+                <span>Your account is valid, bot successfully logged in</span>
+              </v-tooltip>
+              <v-tooltip v-if="!item.isValid"  bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-icon v-on="on" v-bind="attrs" color="red" :alt="item.id" dark>
+                    mdi-alert-circle
+                  </v-icon>
+                </template>
+                <span>Your account isn't valid, try to update credentials</span>
+              </v-tooltip>
+            </template>
             <template v-slot:[`item.id`]="{ item }">
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
@@ -174,6 +192,7 @@ export default {
       //   value: "img",
       // },
       { text: "Username", value: "username", align: "left" },
+      { text: "Valid", value: "isValid", sortable: false, align: "center" },
       {
         text: "Actions",
         value: "id",
@@ -199,16 +218,15 @@ export default {
   }),
   methods: {
     addBotsToTable: function (bots) {
-      bots.map(({ _id, instagramUrl, isActive }) => {
-        const username = instagramUrl
-          .replace("https://www.instagram.com/", "")
-          .replace("/", "")
-          .trim();
+      bots.map(({ _id, credentials, isValid, isActive }) => {
+        const { username } = credentials;
+        const url = `https://www.instagram.com/${username}`;
 
         this.bots.push({
           id: _id,
           username,
-          url: instagramUrl,
+          url,
+          isValid,
           isActive,
         });
       });
