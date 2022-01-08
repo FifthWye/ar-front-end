@@ -4,9 +4,10 @@
       <v-container fluid class="fill-height bg">
         <v-row align="center" justify="center">
           <v-col cols="12" sm="8" md="4">
-            <v-icon v-if="!this.isVerified" class="rotating" color="green" dark>
+            <v-icon v-if="!this.isVerified" size="50" class="rotating" color="green" dark>
               mdi-loading
             </v-icon>
+            <h1 v-if="!this.isVerified">Wait we are verifying your account</h1>
             <h1 v-if="this.isVerified">Your account successfully verified, now you can login.</h1>
             <a v-if="this.isVerified" href="/login">go to login page</a>
           </v-col>
@@ -27,7 +28,7 @@ export default {
   async mounted() {
     const resetToken = this.$route.params.resetToken;
     const res = await userService.activateAccount(resetToken);
-    console.log(res)
+    
     if(res) this.isVerified = true;
   },
 };
@@ -63,10 +64,11 @@ export default {
   }
 }
 .rotating {
-  -webkit-animation: rotating 4s linear infinite;
-  -moz-animation: rotating 4s linear infinite;
-  -ms-animation: rotating 4s linear infinite;
-  -o-animation: rotating 4s linear infinite;
-  animation: rotating 4s linear infinite;
+  -webkit-animation: rotating 1s linear infinite;
+  -moz-animation: rotating 1s linear infinite;
+  -ms-animation: rotating 1s linear infinite;
+  -o-animation: rotating 1s linear infinite;
+  animation: rotating 1s linear infinite;
+  margin-bottom: 20px;
 }
 </style>

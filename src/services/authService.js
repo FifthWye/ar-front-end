@@ -34,11 +34,19 @@ async function login(email, password) {
     return { error: error.response.data.message };
   }
 
-  const { status } = response;
+  const { data, status } = response;
+  const { user } = data;
 
   if (!response.headers['x-auth-token']) {
     //why to show this to user???
     return { error: 'No auth token' };
+  }
+
+  if (!user.isVerified) {
+    return {
+      warring:
+        'Your account is not verified. Check your email or contact support to get verified manually.',
+    };
   }
 
   if (status === 200) {

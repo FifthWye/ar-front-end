@@ -4,13 +4,15 @@ import Login from '../views/Login/index.vue';
 import SignUp from '../views/SignUp/index.vue';
 import Panel from '../views/Panel/index.vue';
 import Replies from '../views/Replies/index.vue';
-import Confirm from '../views/Confirm.vue'
-import error404 from '../views/error404.vue'
+import Confirm from '../views/Confirm.vue';
+import error404 from '../views/error404.vue';
+import { parseJwt } from '../utils/parseJwt'
 
 Vue.use(VueRouter);
 
 const forUnAuthUsers = (to, from, next) => {
-  if (localStorage.getItem('token')) {
+  const { isVerified } = parseJwt(localStorage.getItem('token'));
+  if (localStorage.getItem('token') && isVerified) {
     next();
   } else {
     next('/login');
@@ -18,7 +20,8 @@ const forUnAuthUsers = (to, from, next) => {
 };
 
 const forAuthUsers = (to, from, next) => {
-  if (localStorage.getItem('token')) {
+  const { isVerified } = parseJwt(localStorage.getItem('token'));
+  if (localStorage.getItem('token') && isVerified) {
     next('/panel');
   } else {
     next();
@@ -26,7 +29,8 @@ const forAuthUsers = (to, from, next) => {
 };
 
 const fullRedirect = (to, from, next) => {
-  if (localStorage.getItem('token')) {
+  const { isVerified } = parseJwt(localStorage.getItem('token'));
+  if (localStorage.getItem('token') && isVerified) {
     next('/login');
   } else {
     next('/panel');
@@ -57,7 +61,6 @@ const routes = [
     component: Panel,
     beforeEnter: forUnAuthUsers,
   },
-
   {
     path: '/replies/:botId',
     name: 'Replies',
