@@ -4,6 +4,7 @@ import Login from '../views/Login/index.vue';
 import SignUp from '../views/SignUp/index.vue';
 import Panel from '../views/Panel/index.vue';
 import Replies from '../views/Replies/index.vue';
+import error404 from '../views/error404.vue'
 
 Vue.use(VueRouter);
 
@@ -38,14 +39,6 @@ const routes = [
     beforeEnter: fullRedirect,
   },
   {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue'),
-  },
-  {
     path: '/login',
     name: 'Login',
     component: Login,
@@ -70,7 +63,7 @@ const routes = [
     component: Replies,
     beforeEnter: forUnAuthUsers,
   },
-  { path: '/*', component: fullRedirect },
+  { path: '/*', component: error404, beforeEnter: fullRedirect },
 ];
 
 const router = new VueRouter({
