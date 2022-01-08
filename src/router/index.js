@@ -8,26 +8,27 @@ import Replies from '../views/Replies/index.vue';
 Vue.use(VueRouter);
 
 const forUnAuthUsers = (to, from, next) => {
-  if (!localStorage.getItem('token')) {
-    next('/login');
-  } else {
+  if (localStorage.getItem('token')) {
     next();
+  } else {
+    window.location = `/login`;
   }
 };
 
 const forAuthUsers = (to, from, next) => {
   if (localStorage.getItem('token')) {
-    next('/panel');
+    window.location = `/panel`;
   } else {
     next();
   }
 };
 
+// eslint-disable-next-line no-unused-vars
 const fullRedirect = (to, from, next) => {
   if (localStorage.getItem('token')) {
-    next('/login');
+    window.location = `/login`;
   } else {
-    next('/panel');
+    window.location = `/panel`;
   }
 };
 
@@ -43,8 +44,7 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ '../views/About.vue'),
+    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue'),
   },
   {
     path: '/login',
@@ -71,7 +71,7 @@ const routes = [
     component: Replies,
     beforeEnter: forUnAuthUsers,
   },
-  { path: "*", component: fullRedirect }
+  { path: '*', component: fullRedirect },
 ];
 
 const router = new VueRouter({
