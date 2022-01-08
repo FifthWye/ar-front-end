@@ -46,6 +46,8 @@ export default {
     hide: Function,
     callback: Function,
     requireFields: Boolean,
+    currentKeywords: String,
+    currentReply: String,
   },
   data: () => ({
     dialog: false,
@@ -56,6 +58,12 @@ export default {
   watch: {
     show: function (newVal) {
       this.dialog = newVal;
+    },
+    currentKeywords: function (newVal) {
+      this.keywords = newVal;
+    },
+    currentReply: function (newVal) {
+      this.text = newVal;
     },
   },
   methods: {

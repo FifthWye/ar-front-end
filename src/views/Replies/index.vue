@@ -55,7 +55,7 @@
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
-                    @click="handleEdit(item.id)"
+                    @click="handleEdit(item.id, item.keywords, item.text)"
                     small
                     elevation="0"
                     class="action"
@@ -112,6 +112,8 @@
           :show="this.editReplyDialogForm.show"
           :callback="this.editReplyDialogForm.callback"
           :hide="this.hideEditDialogForm"
+          :currentKeywords="this.editReplyDialogForm.currentKeywords"
+          :currentReply="this.editReplyDialogForm.currentReply"
         />
         <DialogForm
           :onlyCredentials="true"
@@ -157,6 +159,8 @@ export default {
     editReplyDialogForm: {
       callback: () => null,
       show: false,
+      currentKeywords: "",
+      currentReply: "",
     },
     addReplyDialogForm: {
       callback: () => null,
@@ -223,6 +227,25 @@ export default {
       this.replies = [];
       this.setUpPage(botId);
     },
+    handleEdit: async function (id, currentKeywords, currentReply) {
+      this.editReplyDialogForm.currentKeywords = currentKeywords;
+      this.editReplyDialogForm.currentReply = currentReply;
+      const callback = async (reply, rawKeywords) => {
+        const botId = this.$route.params.botId;
+        const keywords = rawKeywords
+          .split(",")
+          .map((keyword) => keyword.trim());
+        if (reply && keywords.length !== 0)
+          await botService.editReply(botId, id, keywords, reply);
+
+        this.hideEditDialogForm();
+        this.replies = [];
+        this.setUpPage(botId);
+      };
+
+      this.editReplyDialogForm.callback = callback;
+      this.editReplyDialogForm.show = true;
+    },
   },
   async mounted() {
     const botId = this.$route.params.botId;
@@ -239,5 +262,10 @@ export default {
 
 .action {
   margin: 0 8px;
+}
+
+.add-reply {
+  bottom: 30px !important;
+  right: 30px !important;
 }
 </style>
