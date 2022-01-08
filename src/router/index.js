@@ -68,7 +68,6 @@ const routes = [
     path: '/account/confirm/:resetToken',
     name: 'Confirm',
     component: Confirm,
-    beforeEnter: forAuthUsers,
   },
   { path: '/*', component: error404, beforeEnter: fullRedirect },
 ];
