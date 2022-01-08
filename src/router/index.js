@@ -71,6 +71,7 @@ const routes = [
     component: Replies,
     beforeEnter: forUnAuthUsers,
   },
+  { path: "*", component: fullRedirect }
 ];
 
 const router = new VueRouter({
