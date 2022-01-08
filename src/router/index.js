@@ -11,24 +11,23 @@ const forUnAuthUsers = (to, from, next) => {
   if (localStorage.getItem('token')) {
     next();
   } else {
-    window.location = `/login`;
+    next('/login');
   }
 };
 
 const forAuthUsers = (to, from, next) => {
   if (localStorage.getItem('token')) {
-    window.location = `/panel`;
+    next('/panel');
   } else {
     next();
   }
 };
 
-// eslint-disable-next-line no-unused-vars
 const fullRedirect = (to, from, next) => {
   if (localStorage.getItem('token')) {
-    window.location = `/login`;
+    next('/login');
   } else {
-    window.location = `/panel`;
+    next('/panel');
   }
 };
 
