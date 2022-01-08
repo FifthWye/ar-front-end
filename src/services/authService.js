@@ -34,19 +34,11 @@ async function login(email, password) {
     return { error: error.response.data.message };
   }
 
-  const { data, status } = response;
-  const { user } = data;
+  const { status } = response;
 
   if (!response.headers['x-auth-token']) {
     //why to show this to user???
     return { error: 'No auth token' };
-  }
-
-  if (!user.isVerified) {
-    return {
-      warring:
-        'Your account is not verified. Check your email or contact support to get verified manually.',
-    };
   }
 
   if (status === 200) {
@@ -89,7 +81,7 @@ async function register(user) {
   localStorage.setItem(tokenKey, response.headers['x-auth-token']);
 
   return {
-    success: 'You have successfully created account, now you can try log in',
+    success: 'You have successfully created account, now check your email for verification link',
   };
 }
 

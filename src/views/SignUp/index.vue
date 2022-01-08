@@ -110,6 +110,8 @@ export default {
               this.alertSuccess = false;
             }, 5000);
           }
+
+          window.location.href = '/';
         } else {
           this.showErrorAlert(
             "Password and password confirmation fields do not match"

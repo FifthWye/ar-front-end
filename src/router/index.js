@@ -4,6 +4,7 @@ import Login from '../views/Login/index.vue';
 import SignUp from '../views/SignUp/index.vue';
 import Panel from '../views/Panel/index.vue';
 import Replies from '../views/Replies/index.vue';
+import Confirm from '../views/Confirm.vue'
 import error404 from '../views/error404.vue'
 
 Vue.use(VueRouter);
@@ -62,6 +63,12 @@ const routes = [
     name: 'Replies',
     component: Replies,
     beforeEnter: forUnAuthUsers,
+  },
+  {
+    path: '/account/confirm/:resetToken',
+    name: 'Confirm',
+    component: Confirm,
+    beforeEnter: forAuthUsers,
   },
   { path: '/*', component: error404, beforeEnter: fullRedirect },
 ];
