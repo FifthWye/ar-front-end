@@ -8,36 +8,92 @@
               <v-toolbar class="d-flex justify-center" flat>
                 <v-toolbar-title>Sign in to your account</v-toolbar-title>
               </v-toolbar>
-              <v-card-text>
-                <v-form>
-                  <v-text-field
-                    label="Email"
-                    name="login"
-                    prepend-icon="mdi-email"
-                    type="text"
-                    v-model="email"
-                  ></v-text-field>
-                  <v-text-field
-                    label="Password"
-                    name="password"
-                    prepend-icon="mdi-lock"
-                    type="password"
-                    v-model="password"
-                  ></v-text-field>
-                  <v-text-field
-                    label="Confirm password"
-                    name="confirm-password"
-                    prepend-icon="mdi-check"
-                    type="password"
-                    v-model="confirmPassword"
-                  ></v-text-field>
+              <ValidationObserver v-slot="{ invalid }">
+                <v-form @submit.prevent="handleSignUp">
+                  <v-card-text>
+                    <ValidationProvider
+                      name="email"
+                      rules="required|email|min:5|max:255"
+                      v-slot="{ errors }"
+                    >
+                      <v-text-field
+                        label="Email"
+                        name="login"
+                        prepend-icon="mdi-email"
+                        type="text"
+                        v-model="email"
+                        :error-messages="errors"
+                      ></v-text-field>
+                    </ValidationProvider>
+                    <ValidationProvider
+                      name="first name"
+                      rules="required|min:2|max:50"
+                      v-slot="{ errors }"
+                    >
+                      <v-text-field
+                        label="First Name"
+                        name="firstName"
+                        prepend-icon="mdi-pencil-circle-outline"
+                        type="text"
+                        v-model="firstName"
+                        :error-messages="errors"
+                      ></v-text-field>
+                    </ValidationProvider>
+                    <ValidationProvider
+                      name="last name"
+                      rules="required|min:2|max:50"
+                      v-slot="{ errors }"
+                    >
+                      <v-text-field
+                        label="Last Name"
+                        name="lastName"
+                        prepend-icon="mdi-pencil-circle-outline"
+                        type="text"
+                        v-model="lastName"
+                        :error-messages="errors"
+                      ></v-text-field>
+                    </ValidationProvider>
+                    <ValidationProvider
+                      name="password"
+                      rules="required|min:5|max:255"
+                      v-slot="{ errors }"
+                    >
+                      <v-text-field
+                        label="Password"
+                        name="password"
+                        prepend-icon="mdi-lock"
+                        type="password"
+                        v-model="password"
+                        :error-messages="errors"
+                      ></v-text-field>
+                    </ValidationProvider>
+                    <ValidationProvider
+                      name="confirm password"
+                      rules="required|confirmed:password"
+                      v-slot="{ errors }"
+                    >
+                      <v-text-field
+                        label="Confirm password"
+                        name="confirm-password"
+                        prepend-icon="mdi-check"
+                        type="password"
+                        v-model="confirmPassword"
+                        :error-messages="errors"
+                      ></v-text-field>
+                    </ValidationProvider>
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-btn
+                      type="submit"
+                      color="primary"
+                      :disabled="invalid"
+                      @submit="handleSignUp"
+                      block
+                      >Sign up</v-btn
+                    >
+                  </v-card-actions>
                 </v-form>
-              </v-card-text>
-              <v-card-actions>
-                <v-btn color="primary" @click="handleSignUp" block
-                  >Sign up</v-btn
-                >
-              </v-card-actions>
+              </ValidationObserver>
               <v-card-text>
                 Have an account already?
                 <router-link to="/login">Login</router-link>
@@ -73,6 +129,8 @@ export default {
   data: function () {
     return {
       email: "",
+      firstName: "",
+      lastName: "",
       password: "",
       confirmPassword: "",
       alertText: "",
@@ -89,32 +147,20 @@ export default {
       }, 5000);
     },
     async handleSignUp() {
-      if (this.email === "") {
-        this.showErrorAlert("Email field can't be empty");
-      } else {
-        if (this.password === this.confirmPassword) {
-          const res = await authService.register({
-            firstName: "Unknown",
-            lastName: "Unknown",
-            email: this.email,
-            password: this.password,
-          });
+      const res = await authService.register({
+        firstName: this.firstName,
+        lastName: this.lastName,
+        email: this.email,
+        password: this.password,
+      });
 
-          for (const [key, value] of Object.entries(res)) {
-            this.alertText = value;
-            key === "error"
-              ? (this.alertError = true)
-              : (this.alertSuccess = true);
-            setTimeout(() => {
-              this.alertError = false;
-              this.alertSuccess = false;
-            }, 5000);
-          }
-        } else {
-          this.showErrorAlert(
-            "Password and password confirmation fields do not match"
-          );
-        }
+      for (const [key, value] of Object.entries(res)) {
+        this.alertText = value;
+        key === "error" ? (this.alertError = true) : (this.alertSuccess = true);
+        setTimeout(() => {
+          this.alertError = false;
+          this.alertSuccess = false;
+        }, 5000);
       }
     },
   },

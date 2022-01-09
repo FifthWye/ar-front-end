@@ -9,27 +9,43 @@
               <v-toolbar class="d-flex justify-center" flat>
                 <v-toolbar-title>Trouble Logging In?</v-toolbar-title>
               </v-toolbar>
-              <v-card-text>
-                Enter your email and we'll send you a link to get back into your
-                account.
-                <v-form>
-                  <v-text-field
-                    label="Email"
-                    name="login"
-                    prepend-icon="mdi-email"
-                    type="text"
-                    v-model="email"
-                  ></v-text-field>
-                </v-form>
-              </v-card-text>
-              <v-card-actions>
-                <v-btn color="primary" @click="handleSendRecover" block
-                  >Send recover link</v-btn
-                >
-              </v-card-actions>
-
-              <v-card-text>
-                <router-link to="/sign-up">Create New Account</router-link>
+              <ValidationObserver v-slot="{ invalid }">
+                <form @submit.prevent="handleSendRecover">
+                  <v-card-text>
+                    Enter your email and we'll send you a link to get back into
+                    your account.
+                    <v-form>
+                      <ValidationProvider
+                        name="Email"
+                        rules="required|email|min:5|max:255"
+                        v-slot="{ errors }"
+                      >
+                        <v-text-field
+                          label="Email"
+                          name="login"
+                          prepend-icon="mdi-email"
+                          type="text"
+                          v-model="email"
+                          :error-messages="errors"
+                        ></v-text-field>
+                      </ValidationProvider>
+                    </v-form>
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-btn
+                      type="submit"
+                      color="primary"
+                      :disabled="invalid"
+                      @submit="handleSendRecover"
+                      block
+                      >Send recover link</v-btn
+                    >
+                  </v-card-actions>
+                </form>
+              </ValidationObserver>
+              <v-card-text
+                >or
+                <router-link to="/sign-up"> Create New Account</router-link>
               </v-card-text>
             </v-card>
             <v-alert

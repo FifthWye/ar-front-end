@@ -8,32 +8,52 @@
               <v-toolbar class="d-flex justify-center" flat>
                 <v-toolbar-title>Password Reset</v-toolbar-title>
               </v-toolbar>
+              <ValidationObserver v-slot="{ invalid }">
+                <v-form @submit.prevent="handleResetPassword">
+                  <v-card-text>
+                    Now create a new password for your account and Log in.
 
-              <v-card-text>
-                Now create a new password for your account and Log in.
-
-                <v-form>
-                  <v-text-field
-                    label="Password"
-                    name="password"
-                    prepend-icon="mdi-lock"
-                    type="password"
-                    v-model="password"
-                  ></v-text-field>
-                  <v-text-field
-                    label="Confirm password"
-                    name="confirm-password"
-                    prepend-icon="mdi-check"
-                    type="password"
-                    v-model="confirmPassword"
-                  ></v-text-field>
+                    <ValidationProvider
+                      name="password"
+                      rules="required|min:5|max:255"
+                      v-slot="{ errors }"
+                    >
+                      <v-text-field
+                        label="Password"
+                        name="password"
+                        prepend-icon="mdi-lock"
+                        type="password"
+                        v-model="password"
+                        :error-messages="errors"
+                      ></v-text-field>
+                    </ValidationProvider>
+                    <ValidationProvider
+                      name="confirm password"
+                      rules="required|confirmed:password"
+                      v-slot="{ errors }"
+                    >
+                      <v-text-field
+                        label="Confirm password"
+                        name="confirm-password"
+                        prepend-icon="mdi-check"
+                        type="password"
+                        v-model="confirmPassword"
+                        :error-messages="errors"
+                      ></v-text-field>
+                    </ValidationProvider>
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-btn
+                      type="submit"
+                      color="primary"
+                      :disabled="invalid"
+                      @submit="handleResetPassword"
+                      block
+                      >Reset Password</v-btn
+                    >
+                  </v-card-actions>
                 </v-form>
-              </v-card-text>
-              <v-card-actions>
-                <v-btn color="primary" @click="handleSendRecover" block
-                  >Reset Password</v-btn
-                >
-              </v-card-actions>
+              </ValidationObserver>
             </v-card>
             <v-alert
               :value="alertError"
@@ -80,31 +100,23 @@ export default {
         this.alertError = false;
       }, 5000);
     },
-    async handleSendRecover() {
-      if (this.password === "") {
-        this.showErrorAlert("Password fields can't be empty");
-      } else {
-        if (this.password === this.confirmPassword) {
-          const res = await userService.resetPasswordByToken(
-            this.$route.params.token,
-            this.password
-          );
+    async handleResetPassword() {
+      if (this.password === this.confirmPassword) {
+        const res = await userService.resetPasswordByToken(
+          this.$route.params.token,
+          this.password
+        );
 
-          for (const [key, value] of Object.entries(res)) {
-            this.alertText = value;
-            key === "error"
-              ? (this.alertError = true)
-              : (this.alertSuccess = true);
-            setTimeout(() => {
-              this.alertError = false;
-              this.alertSuccess = false;
-              this.$router.push("/Login");
-            }, 5000);
-          }
-        } else {
-          this.showErrorAlert(
-            "Password and password confirmation fields do not match"
-          );
+        for (const [key, value] of Object.entries(res)) {
+          this.alertText = value;
+          key === "error"
+            ? (this.alertError = true)
+            : (this.alertSuccess = true);
+          setTimeout(() => {
+            this.alertError = false;
+            this.alertSuccess = false;
+            this.$router.push("/Login");
+          }, 5000);
         }
       }
     },

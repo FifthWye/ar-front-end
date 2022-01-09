@@ -9,27 +9,52 @@
                 <v-toolbar-title>Login to your account</v-toolbar-title>
                 <v-img />
               </v-toolbar>
-              <v-card-text>
-                <v-form>
-                  <v-text-field
-                    label="Login"
-                    name="login"
-                    prepend-icon="mdi-account"
-                    type="text"
-                    v-model="email"
-                  ></v-text-field>
-                  <v-text-field
-                    label="Password"
-                    name="password"
-                    prepend-icon="mdi-lock"
-                    type="password"
-                    v-model="password"
-                  ></v-text-field>
+              <ValidationObserver v-slot="{ invalid }">
+                <v-form @submit.prevent="handleLogin">
+                  <v-card-text>
+                    <ValidationProvider
+                      name="Email"
+                      rules="required|min:5|email|min:5|max:255"
+                      v-slot="{ errors }"
+                    >
+                      <v-text-field
+                        label="Login"
+                        name="login"
+                        prepend-icon="mdi-account"
+                        type="text"
+                        v-model="email"
+                        :error-messages="errors"
+                      ></v-text-field>
+                    </ValidationProvider>
+                    <ValidationProvider
+                      name="Password"
+                      rules="required|min:5|max:255"
+                      v-slot="{ errors }"
+                    >
+                      <v-text-field
+                        label="Password"
+                        name="password"
+                        prepend-icon="mdi-lock"
+                        type="password"
+                        v-model="password"
+                        :error-messages="errors"
+                      ></v-text-field>
+                    </ValidationProvider>
+                  </v-card-text>
+
+                  <v-card-actions>
+                    <v-btn
+                      type="submit"
+                      color="primary"
+                      :disabled="invalid"
+                      @submit="handleLogin"
+                      block
+                      >Login</v-btn
+                    >
+                  </v-card-actions>
                 </v-form>
-              </v-card-text>
-              <v-card-actions>
-                <v-btn color="primary" @click="handleLogin" block>Login</v-btn>
-              </v-card-actions>
+              </ValidationObserver>
+
               <v-card-text>
                 Don't have an account?
                 <router-link to="/sign-up">Sign up</router-link>
