@@ -6,6 +6,7 @@ import Panel from '../views/Panel/index.vue';
 import Replies from '../views/Replies/index.vue';
 import Recover from '../views/Recover/index.vue';
 import PasswordReset from '../views/Recover/PasswordReset.vue';
+import Account from '../views/Account/index.vue';
 
 Vue.use(VueRouter);
 
@@ -76,6 +77,12 @@ const routes = [
     path: '/panel',
     name: 'Panel',
     component: Panel,
+    beforeEnter: forUnAuthUsers,
+  },
+  {
+    path: '/account',
+    name: 'Account',
+    component: Account,
     beforeEnter: forUnAuthUsers,
   },
 
