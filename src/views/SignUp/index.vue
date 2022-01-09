@@ -27,7 +27,7 @@
                     </ValidationProvider>
                     <ValidationProvider
                       name="first name"
-                      rules="required|min:2|max:50"
+                      rules="required|min:2|max:50|alpha"
                       v-slot="{ errors }"
                     >
                       <v-text-field
@@ -41,7 +41,7 @@
                     </ValidationProvider>
                     <ValidationProvider
                       name="last name"
-                      rules="required|min:2|max:50"
+                      rules="required|min:2|max:50|alpha"
                       v-slot="{ errors }"
                     >
                       <v-text-field
@@ -154,22 +154,13 @@ export default {
         password: this.password,
       });
 
-          for (const [key, value] of Object.entries(res)) {
-            this.alertText = value;
-            key === "error"
-              ? (this.alertError = true)
-              : (this.alertSuccess = true);
-            setTimeout(() => {
-              this.alertError = false;
-              this.alertSuccess = false;
-            }, 5000);
-          }
-
-        } else {
-          this.showErrorAlert(
-            "Password and password confirmation fields do not match"
-          );
-        }
+      for (const [key, value] of Object.entries(res)) {
+        this.alertText = value;
+        key === "error" ? (this.alertError = true) : (this.alertSuccess = true);
+        setTimeout(() => {
+          this.alertError = false;
+          this.alertSuccess = false;
+        }, 5000);
       }
     },
   },

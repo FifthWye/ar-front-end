@@ -5,6 +5,7 @@ const apiEndpoint = apiUrl + '/user';
 const tokenKey = 'token';
 
 export const userService = {
+  getMe,
   editUser,
   resetPassword,
   changeEmail,
@@ -18,6 +19,12 @@ http.setJwtHeader(getJwt());
 
 function getJwt() {
   return localStorage.getItem(tokenKey);
+}
+
+async function getMe() {
+  const response = await http.get(apiEndpoint + '/');
+
+  return response.data.user;
 }
 
 async function editUser(firstName, lastName) {
@@ -34,21 +41,32 @@ async function editUser(firstName, lastName) {
 }
 
 async function resetPassword(oldPassword, newPassword) {
-  await http.patch(apiEndpoint + '/reset-password', {
-    oldPassword,
-    newPassword,
-  });
+  try {
+    await http.patch(apiEndpoint + '/reset-password', {
+      oldPassword,
+      newPassword,
+    });
+  } catch (error) {
+    return { error: 'Invalid password' };
+  }
+  return { success: 'Success' };
 }
 
 async function changeEmail(password, newEmail) {
-  const response = await http.patch(apiEndpoint + '/change-email', {
-    password,
-    newEmail,
-  });
-  if (!response.headers['x-auth-token']) {
-    return Promise.reject('No auth token');
+  let response;
+  try {
+    response = await http.patch(apiEndpoint + '/change-email', {
+      password,
+      newEmail,
+    });
+  } catch (error) {
+    if (error.response.data.message.includes('Already Exist'))
+      return { error: 'This email is already used. Try different' };
+    return { error: 'Invalid email or password' };
   }
+
   localStorage.setItem(tokenKey, response.headers['x-auth-token']);
+  return { success: 'Success' };
 }
 
 //=========================AccountVerification=========================//

@@ -49,7 +49,7 @@ export default {
     menuItems: [
       {
         route: "/account",
-        icon: "mdi-account",
+        icon: "mdi-account-circle",
         text: "Account",
         showUnauth: false,
       },

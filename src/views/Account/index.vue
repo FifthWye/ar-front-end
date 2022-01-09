@@ -10,16 +10,32 @@
                 <v-img />
               </v-toolbar>
 
-              <v-card cols="2">
-                <v-card-text>
+              <v-card cols="2" style="margin-bottom: 2em">
+                <v-card-text cols="2">
                   <table>
                     <tr>
-                      <td>Name:</td>
-                      <td>edwin</td>
+                      <td>Email:</td>
+                      <td>{{ this.email }}</td>
                     </tr>
                     <tr>
-                      <td>Life:</td>
-                      <td>sucks</td>
+                      <td>First name:</td>
+                      <td>{{ this.firstName }}</td>
+                    </tr>
+                    <tr>
+                      <td>Last name:</td>
+                      <td>{{ this.lastName }}</td>
+                    </tr>
+                    <tr>
+                      <td>My bots amount:</td>
+                      <td>
+                        {{ this.OwnedBotsQuantity }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Invited bots amount:</td>
+                      <td>
+                        {{ this.InvitedBotsQuantity }}
+                      </td>
                     </tr>
                   </table>
                 </v-card-text>
@@ -39,32 +55,39 @@
                 max-width="500px"
                 class="mx-auto"
                 v-if="!isHiddenReset"
+                style="margin-bottom: 2em"
               >
                 <v-toolbar class="d-flex justify-center" flat>
                   <v-toolbar-title>Reset password</v-toolbar-title>
                 </v-toolbar>
                 <ValidationObserver v-slot="{ invalid }">
-                  <v-form @submit.prevent="handleSignUp">
+                  <v-form @submit.prevent="handleResetPassword">
                     <v-card-text>
-                      <v-text-field
-                        label="Password"
-                        name="password"
-                        prepend-icon="mdi-lock"
-                        type="password"
-                        v-model="password"
-                        :error-messages="errors"
-                      ></v-text-field>
                       <ValidationProvider
-                        name="password"
+                        name="old-password"
                         rules="required|min:5|max:255"
                         v-slot="{ errors }"
                       >
                         <v-text-field
-                          label="New password"
-                          name="password"
+                          label="Password"
+                          name="old-password"
                           prepend-icon="mdi-lock"
                           type="password"
-                          v-model="password"
+                          v-model="oldPassword"
+                          :error-messages="errors"
+                        ></v-text-field>
+                      </ValidationProvider>
+                      <ValidationProvider
+                        name="password"
+                        rules="required|min:5|max:255|"
+                        v-slot="{ errors }"
+                      >
+                        <v-text-field
+                          label="New password"
+                          name="new-password"
+                          prepend-icon="mdi-lock"
+                          type="password"
+                          v-model="newPassword"
                           :error-messages="errors"
                         ></v-text-field>
                       </ValidationProvider>
@@ -88,7 +111,7 @@
                         type="submit"
                         color="primary"
                         :disabled="invalid"
-                        @submit="handleSignUp"
+                        @submit="handleResetPassword"
                         block
                         >Reset Password</v-btn
                       >
@@ -109,13 +132,14 @@
                 elevation="0"
                 max-width="500px"
                 class="mx-auto"
+                style="margin-bottom: 2em"
                 v-if="!isHiddenEmailChange"
               >
                 <v-toolbar class="d-flex justify-center" flat>
                   <v-toolbar-title>Change email</v-toolbar-title>
                 </v-toolbar>
                 <ValidationObserver v-slot="{ invalid }">
-                  <v-form @submit.prevent="handleSignUp">
+                  <v-form @submit.prevent="handleChangeEmail">
                     <v-card-text>
                       <ValidationProvider
                         name="Email"
@@ -124,10 +148,10 @@
                       >
                         <v-text-field
                           label="New email"
-                          name="login"
+                          name="newEmail"
                           prepend-icon="mdi-account"
                           type="text"
-                          v-model="email"
+                          v-model="newEmail"
                           :error-messages="errors"
                         ></v-text-field>
                       </ValidationProvider>
@@ -151,7 +175,7 @@
                         type="submit"
                         color="primary"
                         :disabled="invalid"
-                        @submit="handleSignUp"
+                        @submit="handleChangeEmail"
                         block
                         >Change password</v-btn
                       >
@@ -185,18 +209,36 @@
 </template>
 
 <script>
-import { authService } from "../../services/authService";
+import { userService } from "../../services/userService";
+
 export default {
   name: "SignUp",
+  async mounted() {
+    let user;
+    user = await userService.getMe();
+    this.email = user.email;
+    this.firstName = user.firstName;
+    this.lastName = user.lastName;
+    this.OwnedBotsQuantity = user.OwnedBotsQuantity;
+    this.InvitedBotsQuantity = user.InvitedBotsQuantity;
+  },
   data: function () {
     return {
       isHiddenReset: true,
       isHiddenEmailChange: true,
-      email: "",
+      email: "email",
       firstName: "",
       lastName: "",
-      password: "",
+      OwnedBotsQuantity: 0,
+      InvitedBotsQuantity: 0,
+
+      oldPassword: "",
+      newPassword: "",
       confirmPassword: "",
+
+      password: "",
+      newEmail: "",
+
       alertText: "",
       alertError: false,
       alertSuccess: false,
@@ -210,13 +252,23 @@ export default {
         this.alertError = false;
       }, 5000);
     },
-    async handleSignUp() {
-      const res = await authService.register({
-        firstName: this.firstName,
-        lastName: this.lastName,
-        email: this.email,
-        password: this.password,
-      });
+    async handleResetPassword() {
+      const res = await userService.resetPassword(
+        this.oldPassword,
+        this.newPassword
+      );
+
+      for (const [key, value] of Object.entries(res)) {
+        this.alertText = value;
+        key === "error" ? (this.alertError = true) : (this.alertSuccess = true);
+        setTimeout(() => {
+          this.alertError = false;
+          this.alertSuccess = false;
+        }, 5000);
+      }
+    },
+    async handleChangeEmail() {
+      const res = await userService.changeEmail(this.password, this.newEmail);
 
       for (const [key, value] of Object.entries(res)) {
         this.alertText = value;
@@ -236,11 +288,17 @@ table {
   width: 100%;
 }
 
+table tr {
+  margin: 1em 0 1em 0;
+}
+
 table tr td:first-child {
   text-align: left;
+  font-weight: bold;
 }
 
 table tr td:last-child {
   text-align: right;
+  text-align: start;
 }
 </style>
