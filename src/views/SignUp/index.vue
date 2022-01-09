@@ -147,13 +147,16 @@ export default {
       }, 5000);
     },
     async handleSignUp() {
-      const res = await authService.register({
-        firstName: this.firstName,
-        lastName: this.lastName,
-        email: this.email,
-        password: this.password,
-      });
-
+      if (this.email === "") {
+        this.showErrorAlert("Email field can't be empty");
+      } else {
+        if (this.password === this.confirmPassword) {
+          const res = await authService.register({
+            firstName: this.firstName,
+            lastName: this.lastName,
+            email: this.email,
+            password: this.password,
+          });
           for (const [key, value] of Object.entries(res)) {
             this.alertText = value;
             key === "error"
@@ -164,7 +167,6 @@ export default {
               this.alertSuccess = false;
             }, 5000);
           }
-
         } else {
           this.showErrorAlert(
             "Password and password confirmation fields do not match"
