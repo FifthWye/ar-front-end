@@ -4,6 +4,8 @@ import Login from '../views/Login/index.vue';
 import SignUp from '../views/SignUp/index.vue';
 import Panel from '../views/Panel/index.vue';
 import Replies from '../views/Replies/index.vue';
+import Recover from '../views/Recover/index.vue';
+import PasswordReset from '../views/Recover/PasswordReset.vue';
 
 Vue.use(VueRouter);
 
@@ -56,6 +58,18 @@ const routes = [
     path: '/sign-up',
     name: 'SignUp',
     component: SignUp,
+    beforeEnter: forAuthUsers,
+  },
+  {
+    path: '/accounts/recover/',
+    name: 'Recover',
+    component: Recover,
+    beforeEnter: forAuthUsers,
+  },
+  {
+    path: '/accounts/password/reset/:token',
+    name: 'PasswordReset',
+    component: PasswordReset,
     beforeEnter: forAuthUsers,
   },
   {

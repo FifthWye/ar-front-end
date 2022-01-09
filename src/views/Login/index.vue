@@ -34,6 +34,9 @@
                 Don't have an account?
                 <router-link to="/sign-up">Sign up</router-link>
               </v-card-text>
+              <router-link style="font-size: 0.9em" to="/accounts/recover/"
+                >Forgot password?</router-link
+              >
             </v-card>
             <v-alert
               :value="alertError"
@@ -77,7 +80,7 @@ export default {
 
       for (const [key, value] of Object.entries(res)) {
         this.alertText = value;
-        key === 'error' ? this.alertError = true : this.alertSuccess = true;
+        key === "error" ? (this.alertError = true) : (this.alertSuccess = true);
         setTimeout(() => {
           this.alertError = false;
           this.alertSuccess = false;

@@ -3,8 +3,6 @@ import { apiUrl } from '../config.json';
 
 const apiEndpoint = apiUrl + '/user';
 const tokenKey = 'token';
-const verificationLink = 'link';
-const recoverEmailLink = 'link';
 
 export const userService = {
   editUser,
@@ -56,11 +54,7 @@ async function changeEmail(password, newEmail) {
 //=========================AccountVerification=========================//
 
 async function sendVerificationEmail() {
-  await http.get(apiEndpoint + '/send-activate-email', {
-    params: {
-      link: verificationLink,
-    },
-  });
+  await http.get(apiEndpoint + '/send-activate-email');
 }
 
 async function activateAccount(token) {
@@ -77,18 +71,22 @@ async function activateAccount(token) {
 //=========================forgotPassword=========================//
 
 async function sendRecoverEmail(email) {
-  email = 'skakodube@gmail.com';
   await http.get(apiEndpoint + '/send-recover-email', {
     params: {
       email,
-      link: recoverEmailLink,
     },
   });
+  return {
+    success: `We sent an email to ${email} with a link to get back into your account.`,
+  };
 }
 
-async function resetPasswordByToken(token, newPassword) {
+async function resetPasswordByToken(token, password) {
   await http.patch(apiEndpoint + '/recover-password', {
     token,
-    password: newPassword,
+    password,
   });
+  return {
+    success: `Success. Now you can log into your account.`,
+  };
 }
