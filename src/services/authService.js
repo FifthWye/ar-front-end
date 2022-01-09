@@ -41,7 +41,7 @@ async function login(email, password) {
 
   if (status === 200) {
     localStorage.setItem(tokenKey, response.headers['x-auth-token']);
-    window.location.href = '/panel';
+    window.location.href = '/';
     return { success: 'You successfully logged in' };
   }
 }

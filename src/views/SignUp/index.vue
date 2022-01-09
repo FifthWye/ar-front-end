@@ -154,13 +154,22 @@ export default {
         password: this.password,
       });
 
-      for (const [key, value] of Object.entries(res)) {
-        this.alertText = value;
-        key === "error" ? (this.alertError = true) : (this.alertSuccess = true);
-        setTimeout(() => {
-          this.alertError = false;
-          this.alertSuccess = false;
-        }, 5000);
+          for (const [key, value] of Object.entries(res)) {
+            this.alertText = value;
+            key === "error"
+              ? (this.alertError = true)
+              : (this.alertSuccess = true);
+            setTimeout(() => {
+              this.alertError = false;
+              this.alertSuccess = false;
+            }, 5000);
+          }
+
+        } else {
+          this.showErrorAlert(
+            "Password and password confirmation fields do not match"
+          );
+        }
       }
     },
   },

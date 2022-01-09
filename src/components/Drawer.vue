@@ -38,6 +38,7 @@
 
 <script>
 import { authService } from "../../src/services/authService";
+import { parseJwt } from "../utils/parseJwt";
 
 export default {
   name: "Drawer",
@@ -74,7 +75,8 @@ export default {
   },
   computed: {
     isAuthorized: function () {
-      return Boolean(localStorage.getItem("token"));
+      const { isVerified } = parseJwt(localStorage.getItem("token"));
+      return Boolean(localStorage.getItem("token")) && isVerified;
     },
   },
 };

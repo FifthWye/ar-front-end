@@ -4,6 +4,9 @@ import Login from '../views/Login/index.vue';
 import SignUp from '../views/SignUp/index.vue';
 import Panel from '../views/Panel/index.vue';
 import Replies from '../views/Replies/index.vue';
+import Confirm from '../views/Confirm.vue';
+import error404 from '../views/error404.vue';
+import { parseJwt } from '../utils/parseJwt'
 import Recover from '../views/Recover/index.vue';
 import PasswordReset from '../views/Recover/PasswordReset.vue';
 import Account from '../views/Account/index.vue';
@@ -11,15 +14,17 @@ import Account from '../views/Account/index.vue';
 Vue.use(VueRouter);
 
 const forUnAuthUsers = (to, from, next) => {
-  if (!localStorage.getItem('token')) {
-    next('/login');
-  } else {
+  const { isVerified } = parseJwt(localStorage.getItem('token'));
+  if (localStorage.getItem('token') && isVerified) {
     next();
+  } else {
+    next('/login');
   }
 };
 
 const forAuthUsers = (to, from, next) => {
-  if (localStorage.getItem('token')) {
+  const { isVerified } = parseJwt(localStorage.getItem('token'));
+  if (localStorage.getItem('token') && isVerified) {
     next('/panel');
   } else {
     next();
@@ -27,7 +32,8 @@ const forAuthUsers = (to, from, next) => {
 };
 
 const fullRedirect = (to, from, next) => {
-  if (localStorage.getItem('token')) {
+  const { isVerified } = parseJwt(localStorage.getItem('token'));
+  if (localStorage.getItem('token') && isVerified) {
     next('/login');
   } else {
     next('/panel');
@@ -39,15 +45,6 @@ const routes = [
     path: '/',
     name: 'Home',
     beforeEnter: fullRedirect,
-  },
-  {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ '../views/About.vue'),
   },
   {
     path: '/login',
@@ -85,13 +82,18 @@ const routes = [
     component: Account,
     beforeEnter: forUnAuthUsers,
   },
-
   {
     path: '/replies/:botId',
     name: 'Replies',
     component: Replies,
     beforeEnter: forUnAuthUsers,
   },
+  {
+    path: '/account/confirm/:resetToken',
+    name: 'Confirm',
+    component: Confirm,
+  },
+  { path: '/*', component: error404, beforeEnter: fullRedirect },
 ];
 
 const router = new VueRouter({
