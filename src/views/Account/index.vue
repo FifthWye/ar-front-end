@@ -11,8 +11,8 @@
               </v-toolbar>
 
               <v-card cols="2">
-                <v-card-text col="1"> name </v-card-text>
-                <v-card-text col="2"> edwin </v-card-text>
+                <v-card-text > Name: <span>edwin</span></v-card-text>
+                
               </v-card>
 
               <v-card-actions>
