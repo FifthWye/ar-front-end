@@ -11,8 +11,18 @@
               </v-toolbar>
 
               <v-card cols="2">
-                <v-card-text > Name: <span>edwin</span></v-card-text>
-                
+                <v-card-text>
+                  <table>
+                    <tr>
+                      <td>Name:</td>
+                      <td>edwin</td>
+                    </tr>
+                    <tr>
+                      <td>Life:</td>
+                      <td>sucks</td>
+                    </tr>
+                  </table>
+                </v-card-text>
               </v-card>
 
               <v-card-actions>
@@ -220,3 +230,17 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+table {
+  width: 100%;
+}
+
+table tr td:first-child {
+  text-align: left;
+}
+
+table tr td:last-child {
+  text-align: right;
+}
+</style>
