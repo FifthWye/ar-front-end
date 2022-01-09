@@ -1,33 +1,20 @@
 <template>
   <v-app>
-    <v-main class="background">
+    <v-main style="color: grey">
       <v-container fluid class="fill-height bg">
         <v-row align="center" justify="center">
           <v-col cols="12" sm="8" md="4">
-            <v-card elevation="0" max-width="500px" class="pa-6">
+            <v-card elevation="0" max-width="500px" class="mx-auto">
               <v-toolbar class="d-flex justify-center" flat>
-                <v-toolbar-title>Login to your account</v-toolbar-title>
-                <v-img />
+                <v-toolbar-title>Password Reset</v-toolbar-title>
               </v-toolbar>
               <ValidationObserver v-slot="{ invalid }">
-                <v-form @submit.prevent="handleLogin">
+                <v-form @submit.prevent="handleResetPassword">
                   <v-card-text>
+                    Now create a new password for your account and Log in.
+
                     <ValidationProvider
-                      name="Email"
-                      rules="required|min:5|email|min:5|max:255"
-                      v-slot="{ errors }"
-                    >
-                      <v-text-field
-                        label="Login"
-                        name="login"
-                        prepend-icon="mdi-account"
-                        type="text"
-                        v-model="email"
-                        :error-messages="errors"
-                      ></v-text-field>
-                    </ValidationProvider>
-                    <ValidationProvider
-                      name="Password"
+                      name="password"
                       rules="required|min:5|max:255"
                       v-slot="{ errors }"
                     >
@@ -40,28 +27,33 @@
                         :error-messages="errors"
                       ></v-text-field>
                     </ValidationProvider>
+                    <ValidationProvider
+                      name="confirm password"
+                      rules="required|confirmed:password"
+                      v-slot="{ errors }"
+                    >
+                      <v-text-field
+                        label="Confirm password"
+                        name="confirm-password"
+                        prepend-icon="mdi-check"
+                        type="password"
+                        v-model="confirmPassword"
+                        :error-messages="errors"
+                      ></v-text-field>
+                    </ValidationProvider>
                   </v-card-text>
-
                   <v-card-actions>
                     <v-btn
                       type="submit"
                       color="primary"
                       :disabled="invalid"
-                      @submit="handleLogin"
+                      @submit="handleResetPassword"
                       block
-                      >Login</v-btn
+                      >Reset Password</v-btn
                     >
                   </v-card-actions>
                 </v-form>
               </ValidationObserver>
-
-              <v-card-text>
-                Don't have an account?
-                <router-link to="/sign-up">Sign up</router-link>
-              </v-card-text>
-              <router-link style="font-size: 0.9em" to="/accounts/recover/"
-                >Forgot password?</router-link
-              >
             </v-card>
             <v-alert
               :value="alertError"
@@ -87,44 +79,47 @@
 </template>
 
 <script>
-import { authService } from "../../services/authService";
+import { userService } from "../../services/userService";
 export default {
-  name: "Login",
+  name: "Recover",
   data: function () {
     return {
-      email: "",
       password: "",
+      confirmPassword: "",
       alertText: "",
       alertError: false,
       alertSuccess: false,
     };
   },
-  methods: {
-    async handleLogin() {
-      const res = await authService.login(this.email, this.password);
 
-      for (const [key, value] of Object.entries(res)) {
-        this.alertText = value;
-        key === "error" ? (this.alertError = true) : (this.alertSuccess = true);
-        setTimeout(() => {
-          this.alertError = false;
-          this.alertSuccess = false;
-        }, 5000);
+  methods: {
+    showErrorAlert(text) {
+      this.alertText = text;
+      this.alertError = true;
+      setTimeout(() => {
+        this.alertError = false;
+      }, 5000);
+    },
+    async handleResetPassword() {
+      if (this.password === this.confirmPassword) {
+        const res = await userService.resetPasswordByToken(
+          this.$route.params.token,
+          this.password
+        );
+
+        for (const [key, value] of Object.entries(res)) {
+          this.alertText = value;
+          key === "error"
+            ? (this.alertError = true)
+            : (this.alertSuccess = true);
+          setTimeout(() => {
+            this.alertError = false;
+            this.alertSuccess = false;
+            this.$router.push("/Login");
+          }, 5000);
+        }
       }
     },
   },
 };
 </script>
-
-<style scoped>
-.background {
-  background-color: transparent;
-}
-
-.alert {
-  position: absolute;
-  text-align: left;
-  left: 50%;
-  transform: translateX(-50%);
-}
-</style>

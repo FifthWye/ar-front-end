@@ -7,6 +7,8 @@ import Replies from '../views/Replies/index.vue';
 import Confirm from '../views/Confirm.vue';
 import error404 from '../views/error404.vue';
 import { parseJwt } from '../utils/parseJwt'
+import Recover from '../views/Recover/index.vue';
+import PasswordReset from '../views/Recover/PasswordReset.vue';
 
 Vue.use(VueRouter);
 
@@ -53,6 +55,18 @@ const routes = [
     path: '/sign-up',
     name: 'SignUp',
     component: SignUp,
+    beforeEnter: forAuthUsers,
+  },
+  {
+    path: '/accounts/recover/',
+    name: 'Recover',
+    component: Recover,
+    beforeEnter: forAuthUsers,
+  },
+  {
+    path: '/accounts/password/reset/:token',
+    name: 'PasswordReset',
+    component: PasswordReset,
     beforeEnter: forAuthUsers,
   },
   {

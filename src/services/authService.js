@@ -23,24 +23,14 @@ async function login(email, password) {
       password,
     });
   } catch (error) {
-    //need to handle the rest of errors from api, not only celebrate
-    //or show unexpected error
-    if (
-      error.response.data.message.includes('celebrate') ||
-      error.response.data.message.includes('Invalid Email Or Password.') //so it looks consistent, since erros look different from api
-    ) {
+    if (error.response.data.message.includes('Invalid Email Or Password.')) {
       return { error: 'Invalid email or password' };
     }
-    return { error: error.response.data.message };
+    return { error: 'Unexpected error. Try again later' };
   }
 
   const { data, status } = response;
   const { user } = data;
-
-  if (!response.headers['x-auth-token']) {
-    //why to show this to user???
-    return { error: 'No auth token' };
-  }
 
   if (!user.isVerified) {
     return {
@@ -72,13 +62,10 @@ async function register(user) {
       verificationLink,
     });
   } catch (error) {
-    //need to handle the rest of errors from api, not only celebrate
-    //or show unexpected error
-    console.log(error.response);
-    if (error.response.data.message.includes('celebrate')) {
-      return { error: 'Invalid Email or Password' };
+    if (error.response.data.message.includes('User Already Exist')) {
+      return { error: 'Email is already registered. Try different' };
     }
-    return { error: error.response.data.message };
+    return { error: 'Unexpected error. Try again later' };
   }
 
   if (!response.headers['x-auth-token']) {
@@ -89,7 +76,7 @@ async function register(user) {
   localStorage.setItem(tokenKey, response.headers['x-auth-token']);
 
   return {
-    success: 'You have successfully created account, now check your email for verification link',
+    success: `We sent an email to ${user.email} with a link to activate your account.`,
   };
 }
 
