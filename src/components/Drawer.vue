@@ -47,7 +47,14 @@ export default {
     drawer: true,
     expandIcon: "mdi-chevron-right",
     menuItems: [
+      {
+        route: "/account",
+        icon: "mdi-account",
+        text: "Account",
+        showUnauth: false,
+      },
       { route: "/panel", icon: "mdi-dns", text: "Panel", showUnauth: false },
+
       { route: "/login", icon: "mdi-login", text: "Log in", showUnauth: true },
     ],
   }),
