@@ -8,8 +8,7 @@
               mdi-loading
             </v-icon>
             <h1 v-if="!this.isVerified">Wait we are verifying your account</h1>
-            <h1 v-if="this.isVerified">Your account successfully verified, now you can login.</h1>
-            <a v-if="this.isVerified" href="/login">go to login page</a>
+            <h1 v-if="this.isVerified">Your account successfully verified, now you can use panel.</h1>
           </v-col>
         </v-row>
       </v-container>
