@@ -15,15 +15,27 @@
             <template v-slot:[`item.isValid`]="{ item }">
               <v-tooltip v-if="item.isValid" bottom>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-icon v-on="on" v-bind="attrs" color="green" :alt="item.id" dark>
+                  <v-icon
+                    v-on="on"
+                    v-bind="attrs"
+                    color="green"
+                    :alt="item.id"
+                    dark
+                  >
                     mdi-check-bold
                   </v-icon>
                 </template>
                 <span>Your account is valid, bot successfully logged in</span>
               </v-tooltip>
-              <v-tooltip v-if="!item.isValid"  bottom>
+              <v-tooltip v-if="!item.isValid" bottom>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-icon v-on="on" v-bind="attrs" color="red" :alt="item.id" dark>
+                  <v-icon
+                    v-on="on"
+                    v-bind="attrs"
+                    color="red"
+                    :alt="item.id"
+                    dark
+                  >
                     mdi-alert-circle
                   </v-icon>
                 </template>
@@ -100,7 +112,29 @@
                 </template>
                 <span>Edit replies</span>
               </v-tooltip>
-              <v-tooltip bottom>
+              <v-tooltip v-if="!item.invited" bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <router-link
+                    style="text-decoration: none; color: inherit"
+                    :to="{ name: 'Moderators', params: { botId: item.id } }"
+                  >
+                    <v-btn
+                      small
+                      elevation="0"
+                      class="action"
+                      fab
+                      dark
+                      color="grey"
+                    >
+                      <v-icon :alt="item.id" v-on="on" v-bind="attrs" dark>
+                        mdi-account-plus
+                      </v-icon>
+                    </v-btn>
+                  </router-link>
+                </template>
+                <span>Add moderator</span>
+              </v-tooltip>
+              <v-tooltip v-if="!item.invited" bottom>
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
                     @click="handleEdit(item.id)"
@@ -118,7 +152,7 @@
                 </template>
                 <span>Edit bot configuration</span>
               </v-tooltip>
-              <v-tooltip bottom>
+              <v-tooltip v-if="!item.invited" bottom>
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
                     small
@@ -218,7 +252,7 @@ export default {
   }),
   methods: {
     addBotsToTable: function (bots) {
-      bots.map(({ _id, credentials, isValid, isActive }) => {
+      bots.map(({ _id, credentials, isValid, isActive, invited }) => {
         const { username } = credentials;
         const url = `https://www.instagram.com/${username}`;
 
@@ -228,6 +262,7 @@ export default {
           url,
           isValid,
           isActive,
+          invited,
         });
       });
     },
@@ -250,7 +285,7 @@ export default {
       this.setUpPage();
     },
     handleEdit: async function (id) {
-      const callback = async (username, password, defaultReply) => {
+      const callback = async ({ username, password, defaultReply }) => {
         if (username && password)
           await botService.editCredentials(id, username, password);
         if (defaultReply) await botService.editDefaultReply(id, defaultReply);
@@ -263,7 +298,7 @@ export default {
       this.editBotDialogForm.show = true;
     },
     handleAdd: async function () {
-      const callback = async (username, password) => {
+      const callback = async ({ username, password }) => {
         if (username && password)
           await botService.createBot({ username, password });
 
@@ -275,17 +310,22 @@ export default {
       this.addBotDialogForm.callback = callback;
       this.addBotDialogForm.show = true;
     },
+
     hideEditDialogForm: function () {
       this.editBotDialogForm.show = false;
     },
     hideAddDialogForm: function () {
       this.addBotDialogForm.show = false;
     },
+    hideAddModeratorDialogForm: function () {
+      this.addModeratorDialogForm.show = false;
+    },
     setUpPage: async function () {
       const response = await botService.getBots();
       const { user } = response.data;
-      const { OwnedBots } = user;
-      this.addBotsToTable(OwnedBots);
+      const { OwnedBots, InvitedBots } = user;
+      const invited = InvitedBots.map((bot) => ({ ...bot, invited: true }));
+      this.addBotsToTable([...OwnedBots, ...invited]);
     },
   },
   async mounted() {

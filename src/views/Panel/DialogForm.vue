@@ -8,14 +8,21 @@
         <v-card-text>
           <v-container>
             <v-row>
-              <v-col cols="12">
+              <v-col v-if="emailOnly" cols="12">
+                <v-text-field
+                  v-model="email"
+                  :label="requireFields ? 'Email*' : 'Email'"
+                  :required="requireFields"
+                ></v-text-field>
+              </v-col>
+              <v-col v-if="!emailOnly" cols="12">
                 <v-text-field
                   v-model="username"
                   :label="requireFields ? 'Username*' : 'Username'"
                   :required="requireFields"
                 ></v-text-field>
               </v-col>
-              <v-col cols="12">
+              <v-col v-if="!emailOnly" cols="12">
                 <v-text-field
                   :label="requireFields ? 'Password*' : 'Password'"
                   v-model="password"
@@ -38,7 +45,9 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="handleCancel"> Close </v-btn>
+          <v-btn color="blue darken-1" text @click="handleCancel">
+            Close
+          </v-btn>
           <v-btn color="blue darken-1" text @click="handleSave"> Save </v-btn>
         </v-card-actions>
       </v-card>
@@ -55,12 +64,14 @@ export default {
     onlyCredentials: Boolean,
     callback: Function,
     requireFields: Boolean,
+    emailOnly: Boolean,
   },
   data: () => ({
     dialog: false,
     username: "",
     password: "",
     defaultReply: "",
+    email: ""
   }),
   watch: {
     show: function (newVal) {
@@ -69,11 +80,16 @@ export default {
   },
   methods: {
     handleSave: async function () {
-      await this.callback(this.username, this.password, this.defaultReply);
+      await this.callback({
+        username: this.username,
+        password: this.password,
+        defaultReply: this.defaultReply,
+        email: this.email,
+      });
     },
     handleCancel: function () {
-        this.hide()
-    }
+      this.hide();
+    },
   },
 };
 </script>

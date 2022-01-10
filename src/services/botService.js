@@ -85,9 +85,9 @@ async function setReplyActiveValue(botId, replyId, isActive) {
 }
 //=========================Moderators=========================//
 
-async function inviteModerator(userToInviteId, botId) {
+async function inviteModerator(userToInviteEmail, botId) {
   const response = await http.patch(apiEndpoint + '/' + botId + '/invite-moderator', {
-    userToInviteId,
+    userToInviteEmail,
   });
   return response;
 }

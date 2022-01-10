@@ -13,6 +13,7 @@ export const userService = {
   activateAccount,
   sendRecoverEmail,
   resetPasswordByToken,
+  getUsername,
 };
 
 http.setJwtHeader(getJwt());
@@ -25,6 +26,12 @@ async function getMe() {
   const response = await http.get(apiEndpoint + '/');
 
   return response.data.user;
+}
+
+async function getUsername(id) {
+  const response = await http.post(apiEndpoint + '/', { id });
+
+  return response;
 }
 
 async function editUser(firstName, lastName) {

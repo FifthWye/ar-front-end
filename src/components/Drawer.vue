@@ -54,7 +54,6 @@ export default {
         showUnauth: false,
       },
       { route: "/panel", icon: "mdi-dns", text: "Panel", showUnauth: false },
-
       { route: "/login", icon: "mdi-login", text: "Log in", showUnauth: true },
     ],
   }),

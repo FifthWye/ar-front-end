@@ -10,6 +10,7 @@ import { parseJwt } from '../utils/parseJwt'
 import Recover from '../views/Recover/index.vue';
 import PasswordReset from '../views/Recover/PasswordReset.vue';
 import Account from '../views/Account/index.vue';
+import Moderators from '../views/Moderators/index.vue';
 
 Vue.use(VueRouter);
 
@@ -80,6 +81,12 @@ const routes = [
     path: '/account',
     name: 'Account',
     component: Account,
+    beforeEnter: forUnAuthUsers,
+  },
+  {
+    path: '/moderators/:botId',
+    name: 'Moderators',
+    component: Moderators,
     beforeEnter: forUnAuthUsers,
   },
   {

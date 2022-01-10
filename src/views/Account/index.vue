@@ -15,26 +15,26 @@
                   <table>
                     <tr>
                       <td>Email:</td>
-                      <td>{{ this.email }}</td>
+                      <td>{{ this.email !== undefined ? this.email : 'loading...' }}</td>
                     </tr>
                     <tr>
                       <td>First name:</td>
-                      <td>{{ this.firstName }}</td>
+                      <td>{{ this.firstName !== undefined ? this.firstName : 'loading...' }}</td>
                     </tr>
                     <tr>
                       <td>Last name:</td>
-                      <td>{{ this.lastName }}</td>
+                      <td>{{ this.lastName !== undefined ? this.lastName : 'loading...' }}</td>
                     </tr>
                     <tr>
                       <td>My bots amount:</td>
                       <td>
-                        {{ this.OwnedBotsQuantity }}
+                        {{ this.OwnedBotsQuantity !== undefined ? this.OwnedBotsQuantity : 'loading...' }}
                       </td>
                     </tr>
                     <tr>
                       <td>Invited bots amount:</td>
                       <td>
-                        {{ this.InvitedBotsQuantity }}
+                        {{ this.InvitedBotsQuantity !== undefined ? this.InvitedBotsQuantity : 'loading...' }}
                       </td>
                     </tr>
                   </table>
@@ -226,11 +226,11 @@ export default {
     return {
       isHiddenReset: true,
       isHiddenEmailChange: true,
-      email: "email",
-      firstName: "",
-      lastName: "",
-      OwnedBotsQuantity: 0,
-      InvitedBotsQuantity: 0,
+      email: undefined,
+      firstName: undefined,
+      lastName: undefined,
+      OwnedBotsQuantity: undefined,
+      InvitedBotsQuantity: undefined,
 
       oldPassword: "",
       newPassword: "",
