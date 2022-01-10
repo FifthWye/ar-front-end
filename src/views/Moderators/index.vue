@@ -33,7 +33,7 @@
         </v-row>
         <v-btn
           @click="handleAddModerator"
-          class="add-bot"
+          class="add-moderator"
           color="green"
           dark
           absolute
