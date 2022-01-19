@@ -63,7 +63,6 @@
 
 <script>
 import { botService } from "../../services/botService";
-import { userService } from "../../services/userService";
 import DialogForm from "../Panel/DialogForm.vue";
 
 import WarringAlert from "../../components/WarringAlert.vue";
@@ -100,13 +99,9 @@ export default {
   }),
   methods: {
     addModeratorsToTable: async function (moderator) {
-      moderator.map(async (id) => {
-        const response = await userService.getUsername(id);
-        const { user } = response.data;
-        const { email, firstName, lastName } = user;
-
+      moderator.map(async ({ _id, email, firstName, lastName }) => {
         this.moderators.push({
-          id,
+          id: _id,
           email,
           firstName,
           lastName,
@@ -115,9 +110,10 @@ export default {
     },
     setUpPage: async function (botId) {
       const response = await botService.getBots();
+      console.log(response);
       const { user } = response.data;
       const { OwnedBots } = user;
-      const {userModerators} = OwnedBots.find(({_id}) => _id === botId);
+      const { userModerators } = OwnedBots.find(({ _id }) => _id === botId);
       await this.addModeratorsToTable(userModerators);
     },
     hideAddDialogForm: function () {
@@ -140,6 +136,7 @@ export default {
       const callback = async (withRequest) => {
         const botId = this.$route.params.botId;
         if (withRequest) {
+          console.log(id, botId)
           await botService.removeModerator(id, botId);
           this.moderators = [];
           this.setUpPage(botId);
