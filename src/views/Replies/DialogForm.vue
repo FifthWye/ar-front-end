@@ -9,18 +9,32 @@
           <v-container>
             <v-row>
               <v-col cols="12">
-                <v-textarea
-                  :label="requireFields ? 'Reply text*' : 'Reply text'"
-                  v-model="text"
-                  hint="Enter here text you want bot to send to specific keywords"
-                ></v-textarea>
+                <ValidationProvider
+                  name="Reply text"
+                  rules="required|min:5|max:655"
+                  v-slot="{ errors }"
+                >
+                  <v-textarea
+                    :label="requireFields ? 'Reply text*' : 'Reply text'"
+                    v-model="text"
+                    hint="Enter here text you want bot to send to specific keywords"
+                    :error-messages="errors"
+                  ></v-textarea>
+                </ValidationProvider>
               </v-col>
               <v-col cols="12">
-                <v-textarea
-                  :label="requireFields ? 'Keywords*' : 'Keywords'"
-                  v-model="keywords"
-                  hint="Write one ore more keywords that will trigger bot to write your reply"
-                ></v-textarea>
+                <ValidationProvider
+                  name="Keyword"
+                  rules="required|min:5|max:655"
+                  v-slot="{ errors }"
+                >
+                  <v-textarea
+                    :label="requireFields ? 'Keywords*' : 'Keywords'"
+                    v-model="keywords"
+                    hint="Write one ore more keywords that will trigger bot to write your reply"
+                    :error-messages="errors"
+                  ></v-textarea>
+                </ValidationProvider>
               </v-col>
             </v-row>
           </v-container>

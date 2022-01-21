@@ -8,37 +8,60 @@
         <v-card-text>
           <v-container>
             <v-row>
-              <v-col v-if="emailOnly" cols="12">
-                <v-text-field
-                  v-model="email"
-                  :label="requireFields ? 'Email*' : 'Email'"
-                  :required="requireFields"
-                ></v-text-field>
-              </v-col>
-              <v-col v-if="!emailOnly" cols="12">
-                <v-text-field
-                  v-model="username"
-                  :label="requireFields ? 'Username*' : 'Username'"
-                  :required="requireFields"
-                ></v-text-field>
-              </v-col>
-              <v-col v-if="!emailOnly" cols="12">
-                <v-text-field
-                  :label="requireFields ? 'Password*' : 'Password'"
-                  v-model="password"
-                  type="password"
-                  :required="requireFields"
-                ></v-text-field>
-              </v-col>
-              <v-col v-if="!onlyCredentials" cols="12">
-                <v-text-field
-                  label="Default reply"
-                  v-model="defaultReply"
-                  hint="This text will be sent in case if bot didn't find any reply to send"
-                  persistent-hint
-                  required
-                ></v-text-field>
-              </v-col>
+              <v-form @submit.prevent="handleLogin">
+                <v-col v-if="emailOnly" cols="12">
+                  <ValidationProvider
+                    name="Email"
+                    rules="required|min:5|max:255"
+                    v-slot="{ errors }"
+                  >
+                    <v-text-field
+                      v-model="email"
+                      :label="requireFields ? 'Email*' : 'Email'"
+                      :required="requireFields"
+                      :error-messages="errors"
+                    ></v-text-field>
+                  </ValidationProvider>
+                </v-col>
+                <v-col v-if="!emailOnly" cols="12">
+                  <ValidationProvider
+                    name="Username"
+                    rules="required|min:5|max:255"
+                    v-slot="{ errors }"
+                  >
+                    <v-text-field
+                      v-model="username"
+                      :label="requireFields ? 'Username*' : 'Username'"
+                      :required="requireFields"
+                      :error-messages="errors"
+                    ></v-text-field>
+                  </ValidationProvider>
+                </v-col>
+                <v-col v-if="!emailOnly" cols="12">
+                  <ValidationProvider
+                    name="Password"
+                    rules="required|min:5|max:255"
+                    v-slot="{ errors }"
+                  >
+                    <v-text-field
+                      :label="requireFields ? 'Password*' : 'Password'"
+                      v-model="password"
+                      type="password"
+                      :required="requireFields"
+                      :error-messages="errors"
+                    ></v-text-field>
+                  </ValidationProvider>
+                </v-col>
+                <v-col v-if="!onlyCredentials" cols="12">
+                  <v-text-field
+                    label="Default reply"
+                    v-model="defaultReply"
+                    hint="This text will be sent in case if bot didn't find any reply to send"
+                    persistent-hint
+                    required
+                  ></v-text-field>
+                </v-col>
+              </v-form>
             </v-row>
           </v-container>
           <small v-if="requireFields">*indicates required field</small>
@@ -71,7 +94,7 @@ export default {
     username: "",
     password: "",
     defaultReply: "",
-    email: ""
+    email: "",
   }),
   watch: {
     show: function (newVal) {
@@ -93,3 +116,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+form {
+  width: 100%;
+}
+</style>
