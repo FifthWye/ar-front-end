@@ -228,7 +228,7 @@ export default {
       this.setUpPage(botId);
     },
     handleEdit: async function (id, currentKeywords, currentReply) {
-      this.editReplyDialogForm.currentKeywords = currentKeywords;
+      this.editReplyDialogForm.currentKeywords = currentKeywords.join(', ');
       this.editReplyDialogForm.currentReply = currentReply;
       const callback = async (reply, rawKeywords) => {
         const botId = this.$route.params.botId;

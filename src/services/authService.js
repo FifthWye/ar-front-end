@@ -1,6 +1,9 @@
 import http from './httpService';
 import jwtDecode from 'jwt-decode';
 import { apiUrl } from '../config.json';
+import { getCookie } from '../utils/getCookie';
+import { setCookie } from '../utils/setCookie';
+import { removeCookie } from '../utils/removeCookie';
 
 const apiEndpoint = apiUrl + '/auth';
 const tokenKey = 'token';
@@ -34,20 +37,19 @@ async function login(email, password) {
 
   if (!user.isVerified) {
     return {
-      warring:
-        'Your account is not verified. Check your email or contact support to get verified manually.',
+      warring: 'Your account is not verified. Check your email or contact support to get verified manually.',
     };
   }
 
   if (status === 200) {
-    localStorage.setItem(tokenKey, response.headers['x-auth-token']);
+    setCookie(tokenKey, response.headers['x-auth-token'], 1);
     window.location.href = '/';
     return { success: 'You successfully logged in' };
   }
 }
 
 function logout() {
-  localStorage.removeItem(tokenKey);
+  removeCookie(tokenKey);
   window.location.href = '/';
 }
 
@@ -73,7 +75,7 @@ async function register(user) {
   }
 
   user = response.data.user;
-  localStorage.setItem(tokenKey, response.headers['x-auth-token']);
+  setCookie(tokenKey, response.headers['x-auth-token'], 1);
 
   return {
     success: `We sent an email to ${user.email} with a link to activate your account.`,
@@ -82,7 +84,7 @@ async function register(user) {
 
 function getCurrentUser() {
   try {
-    const jwt = localStorage.getItem(tokenKey);
+    const jwt = getCookie(tokenKey);
 
     return jwtDecode(jwt);
   } catch (ex) {
@@ -91,5 +93,5 @@ function getCurrentUser() {
 }
 
 function getJwt() {
-  return localStorage.getItem(tokenKey);
+  return getCookie(tokenKey);
 }

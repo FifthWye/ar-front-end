@@ -11,12 +11,13 @@ import Recover from '../views/Recover/index.vue';
 import PasswordReset from '../views/Recover/PasswordReset.vue';
 import Account from '../views/Account/index.vue';
 import Moderators from '../views/Moderators/index.vue';
+import { getCookie } from '../utils/getCookie';
 
 Vue.use(VueRouter);
 
 const forUnAuthUsers = (to, from, next) => {
-  const { isVerified } = parseJwt(localStorage.getItem('token'));
-  if (localStorage.getItem('token') && isVerified) {
+  const { isVerified } = parseJwt(getCookie('token'));
+  if (getCookie('token') && isVerified) {
     next();
   } else {
     next('/login');
@@ -24,8 +25,8 @@ const forUnAuthUsers = (to, from, next) => {
 };
 
 const forAuthUsers = (to, from, next) => {
-  const { isVerified } = parseJwt(localStorage.getItem('token'));
-  if (localStorage.getItem('token') && isVerified) {
+  const { isVerified } = parseJwt(getCookie('token'));
+  if (getCookie('token') && isVerified) {
     next('/panel');
   } else {
     next();
@@ -33,8 +34,8 @@ const forAuthUsers = (to, from, next) => {
 };
 
 const fullRedirect = (to, from, next) => {
-  const { isVerified } = parseJwt(localStorage.getItem('token'));
-  if (localStorage.getItem('token') && isVerified) {
+  const { isVerified } = parseJwt(getCookie('token'));
+  if (getCookie('token') && isVerified) {
     next('/login');
   } else {
     next('/panel');

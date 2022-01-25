@@ -39,6 +39,7 @@
 <script>
 import { authService } from "../../src/services/authService";
 import { parseJwt } from "../utils/parseJwt";
+import { getCookie } from "../utils/getCookie";
 
 export default {
   name: "Drawer",
@@ -74,8 +75,8 @@ export default {
   },
   computed: {
     isAuthorized: function () {
-      const { isVerified } = parseJwt(localStorage.getItem("token"));
-      return Boolean(localStorage.getItem("token")) && isVerified;
+      const { isVerified } = parseJwt(getCookie("token"));
+      return Boolean(getCookie("token")) && isVerified;
     },
   },
 };

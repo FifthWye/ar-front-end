@@ -1,5 +1,7 @@
 import http from './httpService';
 import { apiUrl } from '../config.json';
+import { getCookie } from '../utils/getCookie';
+import { setCookie } from '../utils/setCookie';
 
 const apiEndpoint = apiUrl + '/user';
 const tokenKey = 'token';
@@ -19,7 +21,7 @@ export const userService = {
 http.setJwtHeader(getJwt());
 
 function getJwt() {
-  return localStorage.getItem(tokenKey);
+  return getCookie(tokenKey);
 }
 
 async function getMe() {
@@ -43,7 +45,7 @@ async function editUser(firstName, lastName) {
     return { error: 'some error' };
   }
 
-  localStorage.setItem(tokenKey, response.headers['x-auth-token']);
+  setCookie(tokenKey, response.headers['x-auth-token'], 1);
   return JSON.stringify(response.data.user);
 }
 
@@ -72,7 +74,7 @@ async function changeEmail(password, newEmail) {
     return { error: 'Invalid email or password' };
   }
 
-  localStorage.setItem(tokenKey, response.headers['x-auth-token']);
+  setCookie(tokenKey, response.headers['x-auth-token'], 1);
   return { success: 'Success' };
 }
 
@@ -86,10 +88,9 @@ async function activateAccount(token) {
   const response = await http.patch(apiEndpoint + '/activate-account', {
     token,
   });
-  if (!response.headers['x-auth-token']) {
-    return Promise.reject('No auth token');
-  }
-  localStorage.setItem(tokenKey, response.headers['x-auth-token']);
+  if (!response.headers['x-auth-token']) return Promise.reject('No auth token');
+
+  setCookie(tokenKey, response.headers['x-auth-token'], 1);
   return JSON.stringify(response.data.user);
 }
 
