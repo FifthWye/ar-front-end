@@ -7,7 +7,6 @@ import { removeCookie } from '../utils/removeCookie';
 
 const apiEndpoint = apiUrl + '/auth';
 const tokenKey = 'token';
-const verificationLink = 'link';
 
 http.setJwtHeader(getJwt());
 
@@ -61,7 +60,6 @@ async function register(user) {
       lastName: user.lastName,
       email: user.email,
       password: user.password,
-      verificationLink,
     });
   } catch (error) {
     if (error.response.data.message.includes('User Already Exist')) {
