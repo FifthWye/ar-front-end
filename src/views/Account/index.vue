@@ -177,7 +177,7 @@
                         :disabled="invalid"
                         @submit="handleChangeEmail"
                         block
-                        >Change password</v-btn
+                        >Change email</v-btn
                       >
                     </v-card-actions>
                   </v-form>
