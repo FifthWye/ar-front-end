@@ -3,7 +3,7 @@
     <v-dialog v-model="dialog" persistent max-width="800px">
       <v-card>
         <v-card-title>
-          <span class="text-h5">Bot configuration</span>
+          <span class="text-h5">{{ title }}</span>
         </v-card-title>
         <v-card-text>
           <v-container>
@@ -82,6 +82,7 @@
 export default {
   name: "DialogForm",
   props: {
+    title: String,
     show: Boolean,
     hide: Function,
     onlyCredentials: Boolean,

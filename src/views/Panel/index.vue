@@ -191,11 +191,13 @@
           :callback="this.alertValues.callback"
         />
         <DialogForm
+          title="Edit bot configuration"
           :show="this.editBotDialogForm.show"
           :callback="this.editBotDialogForm.callback"
           :hide="this.hideEditDialogForm"
         />
         <DialogForm
+          title="Add new bot"
           :onlyCredentials="true"
           :requireFields="true"
           :show="this.addBotDialogForm.show"

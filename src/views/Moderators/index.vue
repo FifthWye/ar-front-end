@@ -49,6 +49,7 @@
           :callback="this.alertValues.callback"
         />
         <DialogForm
+          title="Add new moderator"
           :emailOnly="true"
           :onlyCredentials="true"
           :requireFields="true"
@@ -110,7 +111,6 @@ export default {
     },
     setUpPage: async function (botId) {
       const response = await botService.getBots();
-      console.log(response);
       const { user } = response.data;
       const { OwnedBots } = user;
       const { userModerators } = OwnedBots.find(({ _id }) => _id === botId);
